@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ecommerce_int2/screens/splash_page.dart';
-import 'package:ecommerce_int2/models/category.dart';
 import 'package:ecommerce_int2/screens/category/category_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
