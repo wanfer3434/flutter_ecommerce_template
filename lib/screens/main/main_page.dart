@@ -17,8 +17,8 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
-List<String> timelines = ['Destacado Semana', 'Mejor de Mayo', 'Mejor de 2024'];
-String selectedTimeline = 'Weekly featured';
+List<String> timelines = ['Destacado Semana', 'Mejor de Julio Día del Padre', 'Mejor de 2024'];
+String selectedTimeline = 'Presentado Semanalmente';
 
 List<Product> products = [
   Product(

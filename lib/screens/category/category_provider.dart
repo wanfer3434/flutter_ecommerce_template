@@ -6,8 +6,8 @@ class CategoryProvider with ChangeNotifier {
     Category(
       Color(0xf4ff0000),
       Color(0xffF68D7F),
-      'Oppo',
-      'assets/funda-silicona-suave-con-cubreobjetivo-para-oppo-a-79-5g.png',
+      'ABORIGEN',
+      'assets/CamisetaAborigenBlancaNegro.jpg',
     ),
     Category(
       Color(0xffF749A2),
@@ -18,20 +18,20 @@ class CategoryProvider with ChangeNotifier {
     Category(
       Color(0xff00E9DA),
       Color(0xff5189EA),
-      'Redmi',
-      'assets/Redmi_13c_5g.png',
+      'Aborigen',
+      'assets/CamisetaBlancaAborigen.jpg',
     ),
     Category(
       Color(0xffAF2D68),
       Color(0xff632376),
-      'A21S',
-      'assets/A21s.jpg',
+      'PUNKIS',
+      'assets/CamisetaBlancaMangaLargaPunkis.jpg',
     ),
     Category(
       Color(0xff36E892),
       Color(0xff33B2B9),
-      'Redmi Note10s',
-      'assets/Redmi_Note_10s.jpg',
+      'SKATE',
+      'assets/CamisetaSkateAllFuckinDayRojaBlanca.jpg',
     ),
     Category(
       Color(0xffF123C4),

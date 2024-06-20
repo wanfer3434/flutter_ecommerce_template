@@ -12,7 +12,7 @@ class CategoryCard extends StatelessWidget {
     required this.end,
     required this.categoryName,
     required this.assetPath,
-  })  : height = Tween<double>(begin: 150, end: 250.0).animate(
+  })  : height = Tween<double>(begin: 150, end: 350.0).animate(
           CurvedAnimation(
             parent: controller,
             curve: Interval(
@@ -22,7 +22,7 @@ class CategoryCard extends StatelessWidget {
             ),
           ),
         ),
-        itemHeight = Tween<double>(begin: 0, end: 150.0).animate(
+        itemHeight = Tween<double>(begin: 0, end: 250.0).animate(
           CurvedAnimation(
             parent: controller,
             curve: Interval(
@@ -73,6 +73,8 @@ class CategoryCard extends StatelessWidget {
                 height: itemHeight.value,
                 child: Image.asset(
                   assetPath,
+                  height: itemHeight.value,
+                  fit: BoxFit.contain, // Ajusta el tamaño de la imagen dentro del contenedor
                 ),
               ),
               Container(
