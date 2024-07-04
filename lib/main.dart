@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
       ],
       child: MaterialApp(
-        title: 'eCommerce int2',
+        title: 'El mejor Servicio',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           brightness: Brightness.light,

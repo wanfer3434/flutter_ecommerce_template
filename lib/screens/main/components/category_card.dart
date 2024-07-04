@@ -2,52 +2,79 @@ import 'package:ecommerce_int2/models/category.dart';
 import 'package:flutter/material.dart';
 
 class CategoryCard extends StatelessWidget {
-  final Category category;
+  final Color begin;
+  final Color end;
+  final String categoryName;
+  final String assetPath;
+  final Animation<double> controller;
 
-  const CategoryCard({
-    required this.category,
+  CategoryCard({
+    required this.controller,
+    required this.begin,
+    required this.end,
+    required this.categoryName,
+    required this.assetPath,
+    required Category category,
   });
+
+  Widget _buildAnimation(BuildContext context, Widget? child) {
+    return Container(
+      width: 240.0, // Ancho fijo para la tarjeta
+      height: 100.0, // Altura fija para la tarjeta, ajusta según sea necesario
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [begin, end],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(2)),
+      ),
+      //padding: const EdgeInsets.all(1.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          // Imagen con una altura fija
+          Container(
+            //height: 25.0, // Altura fija para la imagen, ajusta según sea necesario
+            width: double.infinity,
+            child: Image.asset(
+              assetPath,
+              fit: BoxFit.cover, // Ajuste de la imagen
+            ),
+          ),
+          //SizedBox(height: 1.0), // Espacio entre la imagen y el texto
+          Text(
+            categoryName,
+            style: TextStyle(
+              fontSize: 8, // Ajusta el tamaño del texto
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              //padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 1.0),
+              child: Text(
+                'Ver más',
+                style: TextStyle(color: end, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Card(
-        child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Container(
-                height: 80,
-                width: 90,
-                padding: EdgeInsets.all(8.0),
-                child: Center(
-                  child: Text(
-                    category.category,
-                    textAlign: TextAlign.right,
-                  ),
-                ),
-              ),
-              Container(
-                height: 80,
-                width: 90,
-                decoration: BoxDecoration(
-                    gradient: RadialGradient(
-                        colors: [category.begin, category.end],
-                        center: Alignment(0, 0),
-                        radius: 0.8,
-                        focal: Alignment(0, 0),
-                        focalRadius: 0.1)),
-                padding: EdgeInsets.all(8.0),
-                child: Center(
-                  child: Image.asset(category.image),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
+    return AnimatedBuilder(
+      animation: controller,
+      builder: _buildAnimation,
     );
   }
 }

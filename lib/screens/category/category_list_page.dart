@@ -68,7 +68,7 @@ class _CategoryListPageState extends State<CategoryListPage> {
                   if (value.isNotEmpty) {
                     List<Category> tempList = [];
                     categories.forEach((category) {
-                      if (category.category.toLowerCase().contains(value)) {
+                      if (category.category.toLowerCase().contains(value.toLowerCase())) {
                         tempList.add(category);
                       }
                     });
@@ -96,6 +96,7 @@ class _CategoryListPageState extends State<CategoryListPage> {
                     end: searchResults[index].end,
                     categoryName: searchResults[index].category,
                     assetPath: searchResults[index].image,
+                    category: searchResults[index], // Asegúrate de pasar el parámetro 'category'
                   ),
                 ),
               ),

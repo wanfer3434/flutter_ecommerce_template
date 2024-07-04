@@ -20,44 +20,62 @@ class TabView extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(),
       controller: tabController,
       children: <Widget>[
-        Container(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.all(8.0),
-                height: MediaQuery.of(context).size.height / 9,
-                width: MediaQuery.of(context).size.width,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: categories.length,
-                  itemBuilder: (_, index) => CategoryCard(
-                    category: categories[index],
-                  ),
-                ),
+        // Primer Tab
+        Column(
+          children: <Widget>[
+            // Ajuste dinámico de altura para evitar overflow
+            Container(
+              margin: EdgeInsets.all(2.0),
+              width: MediaQuery.of(context).size.width,
+              height: 150.0, // Altura fija para la lista de categorías, ajusta según sea necesario
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: categories.length,
+                itemBuilder: (_, index) {
+                  final category = categories[index];
+                  return CategoryCard(
+                    controller: AnimationController(
+                      vsync: Scaffold.of(context), // Proporciona un vsync adecuado
+                      duration: const Duration(milliseconds: 300),
+                    ),
+                    begin: category.begin,
+                    end: category.end,
+                    categoryName: category.category,
+                    assetPath: category.image,
+                    category: category,
+                  );
+                },
               ),
-              SizedBox(height: 16.0),
-              Flexible(child: RecommendedList()),
-            ],
-          ),
+            ),
+            SizedBox(height:  3.0), // Espacio entre la lista de categorías y la lista recomendada
+            Expanded(child: RecommendedList()),
+          ],
         ),
-        // Repite las otras pestañas si es necesario
-        Column(children: <Widget>[
-          SizedBox(height: 16.0),
-          Flexible(child: RecommendedList())
-        ]),
-        Column(children: <Widget>[
-          SizedBox(height: 16.0),
-          Flexible(child: RecommendedList())
-        ]),
-        Column(children: <Widget>[
-          SizedBox(height: 16.0),
-          Flexible(child: RecommendedList())
-        ]),
-        Column(children: <Widget>[
-          SizedBox(height: 16.0),
-          Flexible(child: RecommendedList())
-        ]),
+        // Otros Tabs (puedes ajustarlos según tus necesidades)
+        Column(
+          children: <Widget>[
+            SizedBox(height: 3.0), // Ajusta el espacio en la parte superior
+            Expanded(child: RecommendedList()),
+          ],
+        ),
+        Column(
+          children: <Widget>[
+            SizedBox(height: 3.0), // Ajusta el espacio en la parte superior
+            Expanded(child: RecommendedList()),
+          ],
+        ),
+        Column(
+          children: <Widget>[
+            SizedBox(height: 3.0), // Ajusta el espacio en la parte superior
+            Expanded(child: RecommendedList()),
+          ],
+        ),
+        Column(
+          children: <Widget>[
+            SizedBox(height: 3.0), // Ajusta el espacio en la parte superior
+            Expanded(child: RecommendedList()),
+          ],
+        ),
       ],
     );
   }
