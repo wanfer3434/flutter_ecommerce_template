@@ -17,7 +17,7 @@ class TabView extends StatelessWidget {
     final categories = Provider.of<CategoryProvider>(context).categories;
 
     return TabBarView(
-      physics: NeverScrollableScrollPhysics(),
+      physics: AlwaysScrollableScrollPhysics(),
       controller: tabController,
       children: <Widget>[
         // Primer Tab
@@ -25,9 +25,9 @@ class TabView extends StatelessWidget {
           children: <Widget>[
             // Ajuste dinámico de altura para evitar overflow
             Container(
-              margin: EdgeInsets.all(2.0),
+              //margin: EdgeInsets.all(6.0),
               width: MediaQuery.of(context).size.width,
-              height: 150.0, // Altura fija para la lista de categorías, ajusta según sea necesario
+              height: 130.0, // Altura fija para la lista de categorías, ajusta según sea necesario
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: categories.length,
@@ -47,14 +47,14 @@ class TabView extends StatelessWidget {
                 },
               ),
             ),
-            SizedBox(height:  3.0), // Espacio entre la lista de categorías y la lista recomendada
+            SizedBox(height:  8.0), // Espacio entre la lista de categorías y la lista recomendada
             Expanded(child: RecommendedList()),
           ],
         ),
         // Otros Tabs (puedes ajustarlos según tus necesidades)
         Column(
           children: <Widget>[
-            SizedBox(height: 3.0), // Ajusta el espacio en la parte superior
+            SizedBox(height: 8.0), // Ajusta el espacio en la parte superior
             Expanded(child: RecommendedList()),
           ],
         ),

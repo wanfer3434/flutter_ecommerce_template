@@ -39,7 +39,7 @@ class CategoryCard extends StatelessWidget {
             width: double.infinity,
             child: Image.asset(
               assetPath,
-              fit: BoxFit.cover, // Ajuste de la imagen
+              //fit: BoxFit.cover, // Ajuste de la imagen
             ),
           ),
           //SizedBox(height: 1.0), // Espacio entre la imagen y el texto
