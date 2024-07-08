@@ -21,59 +21,79 @@ class TabView extends StatelessWidget {
       controller: tabController,
       children: <Widget>[
         // Primer Tab
-        Column(
-          children: <Widget>[
-            // Ajuste dinámico de altura para evitar overflow
-            Container(
-              //margin: EdgeInsets.all(6.0),
-              width: MediaQuery.of(context).size.width,
-              height: 130.0, // Altura fija para la lista de categorías, ajusta según sea necesario
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: categories.length,
-                itemBuilder: (_, index) {
-                  final category = categories[index];
-                  return CategoryCard(
-                    controller: AnimationController(
-                      vsync: Scaffold.of(context), // Proporciona un vsync adecuado
-                      duration: const Duration(milliseconds: 300),
-                    ),
-                    begin: category.begin,
-                    end: category.end,
-                    categoryName: category.category,
-                    assetPath: category.image,
-                    category: category,
-                  );
-                },
+        CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: 285.0, // Altura fija para la lista de categorías
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: categories.length,
+                  itemBuilder: (_, index) {
+                    final category = categories[index];
+                    return CategoryCard(
+                      controller: AnimationController(
+                        vsync: Scaffold.of(context), // Proporciona un vsync adecuado
+                        duration: const Duration(milliseconds: 300),
+                      ),
+                      begin: category.begin,
+                      end: category.end,
+                      categoryName: category.category,
+                      assetPath: category.image,
+                      category: category,
+                    );
+                  },
+                ),
               ),
             ),
-            SizedBox(height:  8.0), // Espacio entre la lista de categorías y la lista recomendada
-            Expanded(child: RecommendedList()),
+            SliverToBoxAdapter(
+              child: SizedBox(height: 8.0), // Espacio entre la lista de categorías y la lista recomendada
+            ),
+            SliverFillRemaining(
+              child: RecommendedList(),
+            ),
           ],
         ),
-        // Otros Tabs (puedes ajustarlos según tus necesidades)
-        Column(
-          children: <Widget>[
-            SizedBox(height: 8.0), // Ajusta el espacio en la parte superior
-            Expanded(child: RecommendedList()),
+        // Otros Tabs
+        CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: SizedBox(height: 8.0), // Ajusta el espacio en la parte superior
+            ),
+            SliverFillRemaining(
+              child: RecommendedList(),
+            ),
           ],
         ),
-        Column(
-          children: <Widget>[
-            SizedBox(height: 3.0), // Ajusta el espacio en la parte superior
-            Expanded(child: RecommendedList()),
+        CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: SizedBox(height: 8.0), // Ajusta el espacio en la parte superior
+            ),
+            SliverFillRemaining(
+              child: RecommendedList(),
+            ),
           ],
         ),
-        Column(
-          children: <Widget>[
-            SizedBox(height: 3.0), // Ajusta el espacio en la parte superior
-            Expanded(child: RecommendedList()),
+        CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: SizedBox(height: 8.0), // Ajusta el espacio en la parte superior
+            ),
+            SliverFillRemaining(
+              child: RecommendedList(),
+            ),
           ],
         ),
-        Column(
-          children: <Widget>[
-            SizedBox(height: 3.0), // Ajusta el espacio en la parte superior
-            Expanded(child: RecommendedList()),
+        CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: SizedBox(height: 8.0), // Ajusta el espacio en la parte superior
+            ),
+            SliverFillRemaining(
+              child: RecommendedList(),
+            ),
           ],
         ),
       ],

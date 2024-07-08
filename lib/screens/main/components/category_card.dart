@@ -20,7 +20,7 @@ class CategoryCard extends StatelessWidget {
   Widget _buildAnimation(BuildContext context, Widget? child) {
     return Container(
       width: 240.0, // Ancho fijo para la tarjeta
-      height: 100.0, // Altura fija para la tarjeta, ajusta según sea necesario
+      //height: 40.0, // Altura fija para la tarjeta, ajusta según sea necesario
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [begin, end],
@@ -35,11 +35,12 @@ class CategoryCard extends StatelessWidget {
         children: <Widget>[
           // Imagen con una altura fija
           Container(
-            //height: 25.0, // Altura fija para la imagen, ajusta según sea necesario
+            height: 250.0, // Altura fija para la imagen, ajusta según sea necesario
             width: double.infinity,
             child: Image.asset(
               assetPath,
               //fit: BoxFit.cover, // Ajuste de la imagen
+              fit: BoxFit.contain,
             ),
           ),
           //SizedBox(height: 1.0), // Espacio entre la imagen y el texto
