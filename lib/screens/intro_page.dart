@@ -53,7 +53,7 @@ class _IntroPageState extends State<IntroPage> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 32, vertical: 16.0),
                       child: Text(
-                        'Puede comprar cualquier cosa, desde Accesorios de Celulares hasta camisetas y untensillos del Hogar, con unos pocos clics.',
+                        'Puede comprar cualquier Accesorio, desde Accesorios de Celulares hasta camisetas y untensillos del Hogar, con unos pocos clics.',
                         textAlign: TextAlign.right,
                         style: TextStyle(color: Colors.grey, fontSize: 12.0),
                       ),

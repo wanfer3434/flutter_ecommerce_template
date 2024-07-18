@@ -1,23 +1,21 @@
-import 'package:ecommerce_int2/app_properties.dart';
-import 'package:ecommerce_int2/custom_background.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ecommerce_int2/models/product.dart';
-import 'package:ecommerce_int2/screens/category/category_list_page.dart';
 import 'package:ecommerce_int2/screens/notifications_page.dart';
 import 'package:ecommerce_int2/screens/profile_page.dart';
-import 'package:ecommerce_int2/screens/search_page.dart';
 import 'package:ecommerce_int2/screens/shop/check_out_page.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+
+import '../../custom_background.dart';
+import '../category/category_list_page.dart';
 import 'components/custom_bottom_bar.dart';
 import 'components/product_list.dart';
 import 'components/tab_view.dart';
 
-class MainPage extends StatefulWidget {
-  @override
-  _MainPageState createState() => _MainPageState();
-}
-
-List<String> timelines = ['Destacado Semana', 'Mejor de Julio Día del Padre', 'Mejor de 2024'];
+List<String> timelines = [
+  'Destacado Semana',
+  'Mejor de Julio Día del Padre',
+  'Mejor de 2024'
+];
 String selectedTimeline = 'Presentado Semanalmente';
 
 List<Product> products = [
@@ -25,171 +23,173 @@ List<Product> products = [
       'assets/Redmi_note_12.png',
       'Redmi Note12 Diseño Dama',
       'Funda de Teléfono TPU para la serie Xiaomi Redmi con diseños creativos de parejas-Proteccion duradera para 10/10A/10C/12/12C/13C/Note10/Note10s/Pro/Max/Note11/Note11S/Pro/Note12/Note12s/Pro/5G/Note13/Note135G/Pro/13Pro5G.',
-      35.999),
+      35999),
   Product(
       'assets/a15-silinonna.png',
       'Samsung A15',
       'Estuche para Telefono con Espejo de Mariposa regalo para San Valentin/Pacua/Niña/Novios, para iphone14 /14Plus/14Pro Ma, iPHONE13/13mini/13Pro MaxIphone12/12Mini/12Pro,12Pro max',
-      25.999),
+      25999),
   Product(
       'assets/Iphone11_mariposa.jpg',
       'iphone 11',
       'Estuche Para Teléfono con Espejo de Mariposa Regalo Para San Valentín/Pascua/Niña/Novios,Para Iphone 14 / 14Plus/14Pro/14ProMax,Iphone13/13Mini/13Pro/13ProMax/Iphone12/12Mini/12Pro/12ProMax,Iphone11/11Pro/11ProMax.',
-      20.999),
+      20999),
 ];
+
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() => _MainPageState();
+}
 
 class _MainPageState extends State<MainPage>
     with TickerProviderStateMixin<MainPage> {
   late TabController tabController;
   late TabController bottomTabController;
+  TextEditingController searchController = TextEditingController();
+  bool isSearching = false;
+  List<Product> searchResults = [];
 
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: 5, vsync: this);
     bottomTabController = TabController(length: 4, vsync: this);
+    searchResults.addAll(products);
+  }
+
+  void _filterSearchResults(String query) {
+    List<Product> tempList = [];
+    if (query.isNotEmpty) {
+      products.forEach((product) {
+        if (product.name.toLowerCase().contains(query.toLowerCase())) {
+          tempList.add(product);
+        }
+      });
+    } else {
+      tempList.addAll(products); // Mostrar todos los productos si no hay consulta
+    }
+    setState(() {
+      searchResults.clear();
+      searchResults.addAll(tempList);
+    });
+  }
+
+  void _toggleSearch() {
+    setState(() {
+      isSearching = !isSearching;
+      if (!isSearching) {
+        searchController.clear();
+        _filterSearchResults('');
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget appBar = Container(
-      height: kToolbarHeight + MediaQuery.of(context).padding.top,
+    Widget topHeader = Padding(
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 4.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          IconButton(
-              onPressed: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (_) => NotificationsPage())),
-              icon: Icon(Icons.notifications)),
-          IconButton(
-              onPressed: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (_) => SearchPage())),
-              icon: SvgPicture.asset('assets/icons/search_icon.svg'))
+          Flexible(
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  selectedTimeline = timelines[0];
+                  // Actualizar productos según la línea de tiempo seleccionada
+                });
+              },
+              child: Text(
+                timelines[0],
+                style: TextStyle(
+                    fontSize: timelines[0] == selectedTimeline ? 20 : 14,
+                    color: Colors.grey),
+              ),
+            ),
+          ),
+          Flexible(
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  selectedTimeline = timelines[1];
+                  // Actualizar productos según la línea de tiempo seleccionada
+                });
+              },
+              child: Text(timelines[1],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: timelines[1] == selectedTimeline ? 20 : 14,
+                      color: Colors.grey)),
+            ),
+          ),
+          Flexible(
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  selectedTimeline = timelines[2];
+                  // Actualizar productos según la línea de tiempo seleccionada
+                });
+              },
+              child: Text(timelines[2],
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                      fontSize: timelines[2] == selectedTimeline ? 20 : 14,
+                      color: Colors.grey)),
+            ),
+          ),
         ],
       ),
     );
 
-    Widget topHeader = Padding(
-        padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 4.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Flexible(
-              child: InkWell(
-                onTap: () {
-                  setState(() {
-                    selectedTimeline = timelines[0];
-                    products = [
-                      Product(
-                          'assets/G54.jpg',
-                          'Skullcandy headset L325',
-                          'Lorem ipsum dolor sit amet,"prueba", consectetur adipiscing elit, sed do eiusmod tempor ut labore et dolore magna aliqua. Nec nam aliquam sem et tortor consequat id porta nibh. Orci porta non pulvinar neque laoreet suspendisse. Id nibh tortor id aliquet. Dui sapien eget mi proin. Viverra vitae congue eu consequat ac felis donec. Etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus. Vulputate mi sit amet mauris commodo quis imperdiet. Vel fringilla est ullamcorper eget nulla facilisi etiam dignissim. Sit amet cursus sit amet dictum sit amet justo. Mattis pellentesque id nibh tortor. Sed blandit libero volutpat sed cras ornare arcu dui. Fermentum et sollicitudin ac orci phasellus. Ipsum nunc aliquet bibendum enim facilisis gravida. Viverra suspendisse potenti nullam ac tortor. Dapibus ultrices in iaculis nunc sed. Nisi porta lorem mollis aliquam ut porttitor leo a. Phasellus egestas tellus rutrum tellus pellentesque. Et malesuada fames ac turpis egestas maecenas pharetra convallis. Commodo ullamcorper a lacus vestibulum sed arcu non odio. Urna id volutpat lacus laoreet non curabitur gravida arcu ac. Eros in cursus turpis massa. Eget mauris pharetra et ultrices neque.',
-                          102.99),
-                      Product(
-                          'assets/headphones_3.png',
-                          'Skullcandy headset X25',
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ut labore et dolore magna aliqua. Nec nam aliquam sem et tortor consequat id porta nibh. Orci porta non pulvinar neque laoreet suspendisse. Id nibh tortor id aliquet. Dui sapien eget mi proin. Viverra vitae congue eu consequat ac felis donec. Etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus. Vulputate mi sit amet mauris commodo quis imperdiet. Vel fringilla est ullamcorper eget nulla facilisi etiam dignissim. Sit amet cursus sit amet dictum sit amet justo. Mattis pellentesque id nibh tortor. Sed blandit libero volutpat sed cras ornare arcu dui. Fermentum et sollicitudin ac orci phasellus. Ipsum nunc aliquet bibendum enim facilisis gravida. Viverra suspendisse potenti nullam ac tortor. Dapibus ultrices in iaculis nunc sed. Nisi porta lorem mollis aliquam ut porttitor leo a. Phasellus egestas tellus rutrum tellus pellentesque. Et malesuada fames ac turpis egestas maecenas pharetra convallis. Commodo ullamcorper a lacus vestibulum sed arcu non odio. Urna id volutpat lacus laoreet non curabitur gravida arcu ac. Eros in cursus turpis massa. Eget mauris pharetra et ultrices neque.',
-                          55.99),
-                      Product(
-                          'assets/headphones.png',
-                          'Blackzy PRO hedphones M003',
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ut labore et dolore magna aliqua. Nec nam aliquam sem et tortor consequat id porta nibh. Orci porta non pulvinar neque laoreet suspendisse. Id nibh tortor id aliquet. Dui sapien eget mi proin. Viverra vitae congue eu consequat ac felis donec. Etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus. Vulputate mi sit amet mauris commodo quis imperdiet. Vel fringilla est ullamcorper eget nulla facilisi etiam dignissim. Sit amet cursus sit amet dictum sit amet justo. Mattis pellentesque id nibh tortor. Sed blandit libero volutpat sed cras ornare arcu dui. Fermentum et sollicitudin ac orci phasellus. Ipsum nunc aliquet bibendum enim facilisis gravida. Viverra suspendisse potenti nullam ac tortor. Dapibus ultrices in iaculis nunc sed. Nisi porta lorem mollis aliquam ut porttitor leo a. Phasellus egestas tellus rutrum tellus pellentesque. Et malesuada fames ac turpis egestas maecenas pharetra convallis. Commodo ullamcorper a lacus vestibulum sed arcu non odio. Urna id volutpat lacus laoreet non curabitur gravida arcu ac. Eros in cursus turpis massa. Eget mauris pharetra et ultrices neque.',
-                          152.99),
-                    ];
-                  });
-                },
-                child: Text(
-                  timelines[0],
-                  style: TextStyle(
-                      fontSize: timelines[0] == selectedTimeline ? 20 : 14,
-                      color: darkGrey),
-                ),
-              ),
-            ),
-            Flexible(
-              child: InkWell(
-                onTap: () {
-                  setState(() {
-                    selectedTimeline = timelines[1];
-                    products = [
-                      Product(
-                          'assets/bag_5.png',
-                          'Skullcandy headset L325',
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ut labore et dolore magna aliqua. Nec nam aliquam sem et tortor consequat id porta nibh. Orci porta non pulvinar neque laoreet suspendisse. Id nibh tortor id aliquet. Dui sapien eget mi proin. Viverra vitae congue eu consequat ac felis donec. Etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus. Vulputate mi sit amet mauris commodo quis imperdiet. Vel fringilla est ullamcorper eget nulla facilisi etiam dignissim. Sit amet cursus sit amet dictum sit amet justo. Mattis pellentesque id nibh tortor. Sed blandit libero volutpat sed cras ornare arcu dui. Fermentum et sollicitudin ac orci phasellus. Ipsum nunc aliquet bibendum enim facilisis gravida. Viverra suspendisse potenti nullam ac tortor. Dapibus ultrices in iaculis nunc sed. Nisi porta lorem mollis aliquam ut porttitor leo a. Phasellus egestas tellus rutrum tellus pellentesque. Et malesuada fames ac turpis egestas maecenas pharetra convallis. Commodo ullamcorper a lacus vestibulum sed arcu non odio. Urna id volutpat lacus laoreet non curabitur gravida arcu ac. Eros in cursus turpis massa. Eget mauris pharetra et ultrices neque.',
-                          102.99),
-                      Product(
-                          'assets/bag_6.png',
-                          'Skullcandy headset X25',
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ut labore et dolore magna aliqua. Nec nam aliquam sem et tortor consequat id porta nibh. Orci porta non pulvinar neque laoreet suspendisse. Id nibh tortor id aliquet. Dui sapien eget mi proin. Viverra vitae congue eu consequat ac felis donec. Etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus. Vulputate mi sit amet mauris commodo quis imperdiet. Vel fringilla est ullamcorper eget nulla facilisi etiam dignissim. Sit amet cursus sit amet dictum sit amet justo. Mattis pellentesque id nibh tortor. Sed blandit libero volutpat sed cras ornare arcu dui. Fermentum et sollicitudin ac orci phasellus. Ipsum nunc aliquet bibendum enim facilisis gravida. Viverra suspendisse potenti nullam ac tortor. Dapibus ultrices in iaculis nunc sed. Nisi porta lorem mollis aliquam ut porttitor leo a. Phasellus egestas tellus rutrum tellus pellentesque. Et malesuada fames ac turpis egestas maecenas pharetra convallis. Commodo ullamcorper a lacus vestibulum sed arcu non odio. Urna id volutpat lacus laoreet non curabitur gravida arcu ac. Eros in cursus turpis massa. Eget mauris pharetra et ultrices neque.',
-                          55.99),
-                      Product(
-                          'assets/Iphon13_Corazzones.jpg',
-                          'Blackzy PRO hedphones M003',
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ut labore et dolore magna aliqua. Nec nam aliquam sem et tortor consequat id porta nibh. Orci porta non pulvinar neque laoreet suspendisse. Id nibh tortor id aliquet. Dui sapien eget mi proin. Viverra vitae congue eu consequat ac felis donec. Etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus. Vulputate mi sit amet mauris commodo quis imperdiet. Vel fringilla est ullamcorper eget nulla facilisi etiam dignissim. Sit amet cursus sit amet dictum sit amet justo. Mattis pellentesque id nibh tortor. Sed blandit libero volutpat sed cras ornare arcu dui. Fermentum et sollicitudin ac orci phasellus. Ipsum nunc aliquet bibendum enim facilisis gravida. Viverra suspendisse potenti nullam ac tortor. Dapibus ultrices in iaculis nunc sed. Nisi porta lorem mollis aliquam ut porttitor leo a. Phasellus egestas tellus rutrum tellus pellentesque. Et malesuada fames ac turpis egestas maecenas pharetra convallis. Commodo ullamcorper a lacus vestibulum sed arcu non odio. Urna id volutpat lacus laoreet non curabitur gravida arcu ac. Eros in cursus turpis massa. Eget mauris pharetra et ultrices neque.',
-                          152.99),
-                    ];
-                  });
-                },
-                child: Text(timelines[1],
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: timelines[1] == selectedTimeline ? 20 : 14,
-                        color: darkGrey)),
-              ),
-            ),
-            Flexible(
-              child: InkWell(
-                onTap: () {
-                  setState(() {
-                    selectedTimeline = timelines[2];
-                    products = [
-                      Product(
-                          'assets/headphone_13.png',
-                          'Skullcandy headset L325',
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ut labore et dolore magna aliqua. Nec nam aliquam sem et tortor consequat id porta nibh. Orci porta non pulvinar neque laoreet suspendisse. Id nibh tortor id aliquet. Dui sapien eget mi proin. Viverra vitae congue eu consequat ac felis donec. Etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus. Vulputate mi sit amet mauris commodo quis imperdiet. Vel fringilla est ullamcorper eget nulla facilisi etiam dignissim. Sit amet cursus sit amet dictum sit amet justo. Mattis pellentesque id nibh tortor. Sed blandit libero volutpat sed cras ornare arcu dui. Fermentum et sollicitudin ac orci phasellus. Ipsum nunc aliquet bibendum enim facilisis gravida. Viverra suspendisse potenti nullam ac tortor. Dapibus ultrices in iaculis nunc sed. Nisi porta lorem mollis aliquam ut porttitor leo a. Phasellus egestas tellus rutrum tellus pellentesque. Et malesuada fames ac turpis egestas maecenas pharetra convallis. Commodo ullamcorper a lacus vestibulum sed arcu non odio. Urna id volutpat lacus laoreet non curabitur gravida arcu ac. Eros in cursus turpis massa. Eget mauris pharetra et ultrices neque.',
-                          102.99),
-                      Product(
-                          'assets/jeans_4.png',
-                          'Skullcandy headset X25',
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ut labore et dolore magna aliqua. Nec nam aliquam sem et tortor consequat id porta nibh. Orci porta non pulvinar neque laoreet suspendisse. Id nibh tortor id aliquet. Dui sapien eget mi proin. Viverra vitae congue eu consequat ac felis donec. Etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus. Vulputate mi sit amet mauris commodo quis imperdiet. Vel fringilla est ullamcorper eget nulla facilisi etiam dignissim. Sit amet cursus sit amet dictum sit amet justo. Mattis pellentesque id nibh tortor. Sed blandit libero volutpat sed cras ornare arcu dui. Fermentum et sollicitudin ac orci phasellus. Ipsum nunc aliquet bibendum enim facilisis gravida. Viverra suspendisse potenti nullam ac tortor. Dapibus ultrices in iaculis nunc sed. Nisi porta lorem mollis aliquam ut porttitor leo a. Phasellus egestas tellus rutrum tellus pellentesque. Et malesuada fames ac turpis egestas maecenas pharetra convallis. Commodo ullamcorper a lacus vestibulum sed arcu non odio. Urna id volutpat lacus laoreet non curabitur gravida arcu ac. Eros in cursus turpis massa. Eget mauris pharetra et ultrices neque.',
-                          55.99),
-                      Product(
-                          'assets/ring_7.png',
-                          'Blackzy PRO hedphones M003',
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ut labore et dolore magna aliqua. Nec nam aliquam sem et tortor consequat id porta nibh. Orci porta non pulvinar neque laoreet suspendisse. Id nibh tortor id aliquet. Dui sapien eget mi proin. Viverra vitae congue eu consequat ac felis donec. Etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus. Vulputate mi sit amet mauris commodo quis imperdiet. Vel fringilla est ullamcorper eget nulla facilisi etiam dignissim. Sit amet cursus sit amet dictum sit amet justo. Mattis pellentesque id nibh tortor. Sed blandit libero volutpat sed cras ornare arcu dui. Fermentum et sollicitudin ac orci phasellus. Ipsum nunc aliquet bibendum enim facilisis gravida. Viverra suspendisse potenti nullam ac tortor. Dapibus ultrices in iaculis nunc sed. Nisi porta lorem mollis aliquam ut porttitor leo a. Phasellus egestas tellus rutrum tellus pellentesque. Et malesuada fames ac turpis egestas maecenas pharetra convallis. Commodo ullamcorper a lacus vestibulum sed arcu non odio. Urna id volutpat lacus laoreet non curabitur gravida arcu ac. Eros in cursus turpis massa. Eget mauris pharetra et ultrices neque.',
-                          152.99),
-                    ];
-                  });
-                },
-                child: Text(timelines[2],
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                        fontSize: timelines[2] == selectedTimeline ? 20 : 14,
-                        color: darkGrey)),
-              ),
-            ),
-          ],
-        ));
-
     Widget tabBar = TabBar(
       tabs: [
         Tab(text: 'Tendencia'),
-        Tab(text: 'Sports'),
-        Tab(text: 'Headsets'),
-        Tab(text: 'Wireless'),
+        Tab(text: 'Deportes'),
+        Tab(text: 'Audífonos'),
+        Tab(text: 'Inalámbricos'),
         Tab(text: 'Bluetooth'),
       ],
       labelStyle: TextStyle(fontSize: 16.0),
       unselectedLabelStyle: TextStyle(
         fontSize: 14.0,
       ),
-      labelColor: darkGrey,
+      labelColor: Colors.grey,
       unselectedLabelColor: Color.fromRGBO(0, 0, 0, 0.5),
       isScrollable: true,
       controller: tabController,
     );
 
     return Scaffold(
+      appBar: AppBar(
+        title: !isSearching
+            ? Text('Tu Tienda')
+            : TextField(
+          controller: searchController,
+          style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: 'Buscar...',
+            hintStyle: TextStyle(color: Colors.white70),
+            border: InputBorder.none,
+          ),
+          onChanged: _filterSearchResults,
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => NotificationsPage()));
+            },
+          ),
+          IconButton(
+            icon: SvgPicture.asset(
+              'assets/icons/search_icon.svg',
+              height: 24, // Ajustar según el tamaño de tu icono
+              width: 24,
+            ),
+            onPressed: _toggleSearch,
+          ),
+        ],
+      ),
       bottomNavigationBar: CustomBottomBar(controller: bottomTabController),
       body: CustomPaint(
         painter: MainBackground(),
@@ -201,18 +201,15 @@ class _MainPageState extends State<MainPage>
               child: NestedScrollView(
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
-                  // These are the slivers that show up in the "outer" scroll view.
+                  // Estos son los slivers que aparecen en el "outer" scroll view.
                   return <Widget>[
-                    SliverToBoxAdapter(
-                      child: appBar,
-                    ),
                     SliverToBoxAdapter(
                       child: topHeader,
                     ),
                     SliverToBoxAdapter(
-                      child: ProductList(
-                        products: products,
-                      ),
+                      child: isSearching
+                          ? ProductList(products: searchResults)
+                          : ProductList(products: products),
                     ),
                     SliverToBoxAdapter(
                       child: tabBar,
@@ -226,7 +223,7 @@ class _MainPageState extends State<MainPage>
             ),
             CategoryListPage(),
             CheckOutPage(),
-            ProfilePage()
+            ProfilePage(),
           ],
         ),
       ),
