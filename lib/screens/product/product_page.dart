@@ -72,7 +72,7 @@ class _ProductPageState extends State<ProductPage> {
           )
         ],
         title: Text(
-          'Headphones',
+          'Forros Para Su Celular',
           style: const TextStyle(
               color: darkGrey, fontWeight: FontWeight.w500, fontSize: 18.0),
         ),

@@ -165,10 +165,10 @@ class _MainPageState extends State<MainPage>
             ? Text('Tu Tienda')
             : TextField(
           controller: searchController,
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black),
           decoration: InputDecoration(
             hintText: 'Buscar...',
-            hintStyle: TextStyle(color: Colors.white70),
+            hintStyle: TextStyle(color: Colors.black),
             border: InputBorder.none,
           ),
           onChanged: _filterSearchResults,
