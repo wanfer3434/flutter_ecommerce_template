@@ -95,8 +95,8 @@ class _CategoryListPageState extends State<CategoryListPage> {
                     begin: searchResults[index].begin,
                     end: searchResults[index].end,
                     categoryName: searchResults[index].category,
-                    assetPath: searchResults[index].image,
-                    category: searchResults[index], // Asegúrate de pasar el parámetro 'category'
+                    imageUrl: searchResults[index].image,
+                    category: searchResults[index],
                   ),
                 ),
               ),

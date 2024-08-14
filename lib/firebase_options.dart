@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'flutterecommercetemplate-72969.appspot.com',
     measurementId: 'G-HZRCPB7ZQT',
   );
+
 }

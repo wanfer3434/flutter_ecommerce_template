@@ -5,14 +5,14 @@ class StaggeredCardCard extends StatefulWidget {
   final Color begin;
   final Color end;
   final String categoryName;
-  final String assetPath;
+  final String imageUrl; // Cambiado a imageUrl
   final dynamic category; // Agrega esta línea
 
   const StaggeredCardCard({
     required this.begin,
     required this.end,
     required this.categoryName,
-    required this.assetPath,
+    required this.imageUrl, // Cambiado aquí
     required this.category, // Agrega esta línea
   });
 
@@ -66,7 +66,7 @@ class _StaggeredCardCardState extends State<StaggeredCardCard>
         categoryName: widget.categoryName,
         begin: widget.begin,
         end: widget.end,
-        assetPath: widget.assetPath,
+        imageUrl: widget.imageUrl, // Cambiado aquí
         category: widget.category, // Asegúrate de pasar el parámetro 'category'
       ),
     );

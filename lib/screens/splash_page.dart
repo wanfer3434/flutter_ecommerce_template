@@ -1,6 +1,7 @@
 import 'package:ecommerce_int2/app_properties.dart';
 import 'package:flutter/material.dart';
 
+import '../firestore_service.dart';
 import 'intro_page.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -23,8 +24,16 @@ class _SplashScreenState extends State<SplashScreen>
         setState(() {});
       });
     controller.forward().then((_) {
-      navigationPage();
+      _initializeApp();
     });
+  }
+
+  Future<void> _initializeApp() async {
+    // Inicializar productos en Firestore
+    await initializeProducts();
+
+    // Navegar a la pantalla principal después de la inicialización
+    navigationPage();
   }
 
   @override
@@ -38,6 +47,7 @@ class _SplashScreenState extends State<SplashScreen>
         .pushReplacement(MaterialPageRoute(builder: (_) => IntroPage()));
   }
 
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -46,13 +56,13 @@ class _SplashScreenState extends State<SplashScreen>
       child: Container(
         decoration: BoxDecoration(color: transparentYellow),
         child: SafeArea(
-          child: new Scaffold(
+          child: Scaffold(
             body: Column(
               children: <Widget>[
                 Expanded(
                   child: Opacity(
                       opacity: opacity.value,
-                      child: new Image.asset('assets/logo.png')),
+                      child: Image.asset('assets/logo.png')),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),

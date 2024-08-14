@@ -131,10 +131,10 @@ class PromoItem extends StatelessWidget {
             top: 5,
             child: ShopProductDisplay(
               Product(
-                  'assets/headphones.png',
-                  'Boat roackerz 400 On-Ear Bluetooth Headphones',
-                  'description',
-                  45.3),
+                  image: 'assets/headphones.png',
+                  name: 'Boat roackerz 400 On-Ear Bluetooth Headphones',
+                  description: 'description',
+                  price: 45.3),
               onPressed: () {},
             ),
           ),

@@ -40,7 +40,7 @@ class TabView extends StatelessWidget {
                       begin: category.begin,
                       end: category.end,
                       categoryName: category.category,
-                      assetPath: category.image,
+                      imageUrl: category.image,
                       category: category,
                     );
                   },

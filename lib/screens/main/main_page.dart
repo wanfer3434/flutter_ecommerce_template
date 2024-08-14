@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ecommerce_int2/models/product.dart';
 import 'package:ecommerce_int2/screens/notifications_page.dart';
@@ -18,35 +19,17 @@ List<String> timelines = [
 ];
 String selectedTimeline = 'Presentado Semanalmente';
 
-List<Product> products = [
-  Product(
-      'assets/Redmi_note_12.png',
-      'Redmi Note12 Diseño Dama',
-      'Funda de Teléfono TPU para la serie Xiaomi Redmi con diseños creativos de parejas-Proteccion duradera para 10/10A/10C/12/12C/13C/Note10/Note10s/Pro/Max/Note11/Note11S/Pro/Note12/Note12s/Pro/5G/Note13/Note135G/Pro/13Pro5G.',
-      35999),
-  Product(
-      'assets/a15-silinonna.png',
-      'Samsung A15',
-      'Estuche para Telefono con Espejo de Mariposa regalo para San Valentin/Pacua/Niña/Novios, para iphone14 /14Plus/14Pro Ma, iPHONE13/13mini/13Pro MaxIphone12/12Mini/12Pro,12Pro max',
-      25999),
-  Product(
-      'assets/Iphone11_mariposa.jpg',
-      'iphone 11',
-      'Estuche Para Teléfono con Espejo de Mariposa Regalo Para San Valentín/Pascua/Niña/Novios,Para Iphone 14 / 14Plus/14Pro/14ProMax,Iphone13/13Mini/13Pro/13ProMax/Iphone12/12Mini/12Pro/12ProMax,Iphone11/11Pro/11ProMax.',
-      20999),
-];
-
 class MainPage extends StatefulWidget {
   @override
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage>
-    with TickerProviderStateMixin<MainPage> {
+class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainPage> {
   late TabController tabController;
   late TabController bottomTabController;
   TextEditingController searchController = TextEditingController();
   bool isSearching = false;
+  List<Product> products = [];
   List<Product> searchResults = [];
 
   @override
@@ -54,7 +37,15 @@ class _MainPageState extends State<MainPage>
     super.initState();
     tabController = TabController(length: 5, vsync: this);
     bottomTabController = TabController(length: 4, vsync: this);
-    searchResults.addAll(products);
+    _fetchProducts();
+  }
+
+  void _fetchProducts() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('products').get();
+    products = querySnapshot.docs.map((doc) => Product.fromFirestore(doc)).toList();
+    setState(() {
+      searchResults.addAll(products);
+    });
   }
 
   void _filterSearchResults(String query) {

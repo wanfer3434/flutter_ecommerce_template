@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 
 class RecommendedList extends StatelessWidget {
   final List<Product> products = [
-    Product('assets/G54.jpg', 'Bag', 'Beautiful bag', 2.33),
-    Product('assets/funda-silicona-suave-con-cubreobjetivo-para-oppo-a-79-5g.png', 'Cap', 'Cap with beautiful design', 10),
-    Product('assets/funda-silicona-suave-samsung-a14-5g-con-camara-3d-7-colores.jpg', 'Jeans', 'Jeans for you', 20),
-    Product('assets/Iphon13_Corazzones.jpg', 'Woman Shoes', 'Shoes with special discount', 30),
-    Product('assets/Redmi_13c_5g.png', 'Bag Express', 'Bag for your shops', 40),
-    Product('assets/Redmi_Note_10s.jpg', 'Jeans', 'Beautiful Jeans', 102.33),
-    Product('assets/Redmi_note_12.png', 'Silver Ring', 'Description', 52.33),
-    Product('assets/shoeman_7.png', 'Shoes', 'Description', 62.33),
-    Product('assets/headphone_9.png', 'Headphones', 'Description', 72.33),
+    Product(image: 'assets/G54.jpg', name: 'Bag', description: 'Beautiful bag', price: 2.33),
+    Product(image: 'assets/funda-silicona-suave-con-cubreobjetivo-para-oppo-a-79-5g.png', name: 'Cap', description: 'Cap with beautiful design',price:  10),
+    Product(image: 'assets/funda-silicona-suave-samsung-a14-5g-con-camara-3d-7-colores.jpg', name: 'Jeans', description: 'Jeans for you', price: 20),
+    Product(image: 'assets/Iphon13_Corazzones.jpg', name: 'Woman Shoes', description: 'Shoes with special discount', price: 30),
+    Product(image: 'assets/Redmi_13c_5g.png', name: 'Bag Express', description: 'Bag for your shops', price: 40),
+    Product(image: 'assets/Redmi_Note_10s.jpg', name: 'Jeans', description: 'Beautiful Jeans', price:102.33),
+    Product(image: 'assets/Redmi_note_12.png', name: 'Silver Ring', description: 'Description', price: 52.33),
+    Product(image: 'assets/shoeman_7.png', name: 'Shoes', description: 'Description', price: 62.33),
+    Product(image: 'assets/headphone_9.png', name: 'Headphones', description: 'Description', price: 72.33),
   ];
 
   @override
