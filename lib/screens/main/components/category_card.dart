@@ -1,5 +1,6 @@
 import 'package:ecommerce_int2/models/category.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CategoryCard extends StatelessWidget {
   final Color begin;
@@ -34,12 +35,10 @@ class CategoryCard extends StatelessWidget {
           Container(
             height: 250.0,
             width: double.infinity,
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) {
-                return Center(child: Text('Error loading image'));
-              },
+            child: CachedNetworkImage(
+              imageUrl: imageUrl,
+              placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),
             ),
           ),
           Text(

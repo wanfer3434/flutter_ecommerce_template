@@ -45,40 +45,28 @@ Future<void> initializeProducts() async {
 
   List<Product> products = [
     Product(
-      image: 'https://github.com/wanfer3434/flutter_ecommerce_template/blob/master/assets/Redmi_note_12.png?raw=true',
+      imageUrl: 'https://media.istockphoto.com/id/487000910/es/foto/multicolor-tel%C3%A9fono-m%C3%B3vil-casos-de-pl%C3%A1stico.jpg?s=1024x1024&w=is&k=20&c=FuQKPwV7Luy3g8S2Oqt_qdMR1XiIv6tNqIctNjY1duU=',
       name: 'Woman Shoes',
       description: 'Shoes with special discount',
       price: 30,
     ),
     Product(
-      image: 'https://github.com/wanfer3434/flutter_ecommerce_template/blob/master/assets/Redmi_13c_5g.png?raw=true',
+      imageUrl: 'https://media.istockphoto.com/id/1394217370/es/foto/fundas-configuradas-para-smartphone-sobre-fondo-blanco-protecci%C3%B3n-de-silicona-para-tel%C3%A9fono.jpg?s=1024x1024&w=is&k=20&c=cAbeVCllOSaeEj8GD0SFhlVksyKPWUKQxew3OgopUzw=',
       name: 'Bag Express',
       description: 'Bag for your shops',
       price: 40,
     ),
     Product(
-      image: 'https://github.com/wanfer3434/flutter_ecommerce_template/blob/master/assets/Redmi_Note_10s.jpg?raw=true',
+      imageUrl: 'https://media.istockphoto.com/id/1287652193/es/foto/cubierta-transparente-de-pl%C3%A1stico-para-tel%C3%A9fono-m%C3%B3vil-aislada-sobre-fondo-blanco-diferentes.jpg?s=1024x1024&w=is&k=20&c=_KQNUBnAiZpBpnPJ4bvxJUfsQf3aaEOpgUy3Mn4JIo4=',
       name: 'Jeans',
       description: 'Beautiful Jeans',
       price: 102.33,
     ),
     Product(
-      image: 'https://github.com/wanfer3434/flutter_ecommerce_template/blob/master/assets/a15-silinonna.png?raw=true',
+      imageUrl: 'https://media.istockphoto.com/id/1310474826/es/foto/pila-de-cubiertas-traseras-de-pl%C3%A1stico-multicolor-para-el-tel%C3%A9fono-m%C3%B3vil-elecci%C3%B3n-de.jpg?s=1024x1024&w=is&k=20&c=JyhciwHPWaZxQTo3rxovkJ6fY_oa6_CVNMM-3-_r_g0=',
       name: 'Silver Ring',
       description: 'Description',
       price: 52.33,
-    ),
-    Product(
-      image: 'https://github.com/wanfer3434/flutter_ecommerce_template/blob/master/assets/a15-silinonna.png?raw=true',
-      name: 'Shoes',
-      description: 'Description',
-      price: 62.33,
-    ),
-    Product(
-      image: 'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/a15-silinonna.png?alt=media&token=ca1211a9-4ccd-48ae-929f-83960688fab7',
-      name: 'Headphones',
-      description: 'Description',
-      price: 72.33,
     ),
   ];
 

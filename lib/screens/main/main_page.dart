@@ -43,6 +43,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
   void _fetchProducts() async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('products').get();
     products = querySnapshot.docs.map((doc) => Product.fromFirestore(doc)).toList();
+
+    // Precachear las imágenes de los productos
+    for (Product product in products) {
+      precacheImage(NetworkImage(product.imageUrl), context); // Usa el nombre correcto aquí
+    }
+
+
     setState(() {
       searchResults.addAll(products);
     });
@@ -192,7 +199,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
               child: NestedScrollView(
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
-                  // Estos son los slivers que aparecen en el "outer" scroll view.
                   return <Widget>[
                     SliverToBoxAdapter(
                       child: topHeader,

@@ -22,7 +22,7 @@ class _ProductFormState extends State<ProductForm> {
   void initState() {
     super.initState();
     if (widget.existingProduct != null) {
-      _imageController.text = widget.existingProduct!.image;
+      _imageController.text = widget.existingProduct!.imageUrl;
       _nameController.text = widget.existingProduct!.name;
       _descriptionController.text = widget.existingProduct!.description;
       _priceController.text = widget.existingProduct!.price.toString();
@@ -31,7 +31,7 @@ class _ProductFormState extends State<ProductForm> {
 
   void _submit() async {
     final product = Product(
-      image: _imageController.text,
+      imageUrl: _imageController.text,
       name: _nameController.text,
       description: _descriptionController.text,
       price: double.tryParse(_priceController.text) ?? 0,
