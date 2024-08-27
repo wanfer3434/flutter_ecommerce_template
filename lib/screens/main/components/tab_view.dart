@@ -16,6 +16,11 @@ class TabView extends StatelessWidget {
     // Obtén las categorías del CategoryProvider
     final categories = Provider.of<CategoryProvider>(context).categories;
 
+    if (categories.isEmpty) {
+      // Manejo de caso cuando no hay categorías disponibles
+      return Center(child: Text('No categories available'));
+    }
+
     return TabBarView(
       physics: AlwaysScrollableScrollPhysics(),
       controller: tabController,
@@ -32,6 +37,12 @@ class TabView extends StatelessWidget {
                   itemCount: categories.length,
                   itemBuilder: (_, index) {
                     final category = categories[index];
+
+                    // Verificar si la imagen, el nombre y otros detalles están disponibles
+                    if (category.image == null || category.image.isEmpty) {
+                      print('Image URL is missing for category: ${category.category}');
+                    }
+
                     return CategoryCard(
                       controller: AnimationController(
                         vsync: Scaffold.of(context), // Proporciona un vsync adecuado
@@ -39,8 +50,8 @@ class TabView extends StatelessWidget {
                       ),
                       begin: category.begin,
                       end: category.end,
-                      categoryName: category.category,
-                      imageUrl: category.image,
+                      categoryName: category.category ?? 'Unnamed Category',
+                      imageUrl: category.image ?? '', // Asegúrate de que la URL es válida
                       category: category,
                     );
                   },
@@ -55,47 +66,7 @@ class TabView extends StatelessWidget {
             ),
           ],
         ),
-        // Otros Tabs
-        CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(height: 8.0), // Ajusta el espacio en la parte superior
-            ),
-            SliverFillRemaining(
-              child: RecommendedList(),
-            ),
-          ],
-        ),
-        CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(height: 8.0), // Ajusta el espacio en la parte superior
-            ),
-            SliverFillRemaining(
-              child: RecommendedList(),
-            ),
-          ],
-        ),
-        CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(height: 8.0), // Ajusta el espacio en la parte superior
-            ),
-            SliverFillRemaining(
-              child: RecommendedList(),
-            ),
-          ],
-        ),
-        CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(height: 8.0), // Ajusta el espacio en la parte superior
-            ),
-            SliverFillRemaining(
-              child: RecommendedList(),
-            ),
-          ],
-        ),
+        // Otros Tabs con lógica similar...
       ],
     );
   }

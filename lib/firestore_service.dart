@@ -2,15 +2,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_int2/models/product.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-// Función para añadir un producto
+// Función para añadir un producto si no existe
 Future<void> addProduct(Product product) async {
   final firestore = FirebaseFirestore.instance;
 
   try {
-    await firestore.collection('products').add(product.toMap());
-    print('Product added: ${product.name}');
+    // Verifica si ya existe un producto con el mismo nombre
+    final querySnapshot = await firestore.collection('products')
+        .where('name', isEqualTo: product.name)
+        .get();
+
+    if (querySnapshot.docs.isEmpty) {
+      // Si no existe, añade el producto
+      await firestore.collection('products').add(product.toMap());
+      print('Producto añadido: ${product.name}');
+    } else {
+      print('El producto ya existe: ${product.name}');
+    }
   } catch (e) {
-    print('Error adding product: $e');
+    print('Error al añadir el producto: $e');
   }
 }
 
@@ -20,9 +30,9 @@ Future<void> updateProduct(String documentId, Product product) async {
 
   try {
     await firestore.collection('products').doc(documentId).update(product.toMap());
-    print('Product updated: ${product.name}');
+    print('Producto actualizado: ${product.name}');
   } catch (e) {
-    print('Error updating product: $e');
+    print('Error al actualizar el producto: $e');
   }
 }
 
@@ -35,11 +45,11 @@ Stream<List<Product>> getProducts() {
       return Product.fromFirestore(doc);
     }).toList();
   }).handleError((e) {
-    print('Error getting products: $e');
+    print('Error al obtener los productos: $e');
   });
 }
 
-// Función para inicializar los productos
+// Función para inicializar los productos si no existen
 Future<void> initializeProducts() async {
   await Firebase.initializeApp();
 
@@ -48,13 +58,13 @@ Future<void> initializeProducts() async {
       imageUrl: 'https://media.istockphoto.com/id/487000910/es/foto/multicolor-tel%C3%A9fono-m%C3%B3vil-casos-de-pl%C3%A1stico.jpg?s=1024x1024&w=is&k=20&c=FuQKPwV7Luy3g8S2Oqt_qdMR1XiIv6tNqIctNjY1duU=',
       name: 'Woman Shoes',
       description: 'Shoes with special discount',
-      price: 30,
+      price: 30.0,
     ),
     Product(
       imageUrl: 'https://media.istockphoto.com/id/1394217370/es/foto/fundas-configuradas-para-smartphone-sobre-fondo-blanco-protecci%C3%B3n-de-silicona-para-tel%C3%A9fono.jpg?s=1024x1024&w=is&k=20&c=cAbeVCllOSaeEj8GD0SFhlVksyKPWUKQxew3OgopUzw=',
       name: 'Bag Express',
       description: 'Bag for your shops',
-      price: 40,
+      price: 40.0,
     ),
     Product(
       imageUrl: 'https://media.istockphoto.com/id/1287652193/es/foto/cubierta-transparente-de-pl%C3%A1stico-para-tel%C3%A9fono-m%C3%B3vil-aislada-sobre-fondo-blanco-diferentes.jpg?s=1024x1024&w=is&k=20&c=_KQNUBnAiZpBpnPJ4bvxJUfsQf3aaEOpgUy3Mn4JIo4=',

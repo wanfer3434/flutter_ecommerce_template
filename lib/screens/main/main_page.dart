@@ -5,6 +5,7 @@ import 'package:ecommerce_int2/models/product.dart';
 import 'package:ecommerce_int2/screens/notifications_page.dart';
 import 'package:ecommerce_int2/screens/profile_page.dart';
 import 'package:ecommerce_int2/screens/shop/check_out_page.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../custom_background.dart';
 import '../category/category_list_page.dart';
@@ -37,22 +38,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
     super.initState();
     tabController = TabController(length: 5, vsync: this);
     bottomTabController = TabController(length: 4, vsync: this);
-    _fetchProducts();
-  }
-
-  void _fetchProducts() async {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('products').get();
-    products = querySnapshot.docs.map((doc) => Product.fromFirestore(doc)).toList();
-
-    // Precachear las imágenes de los productos
-    for (Product product in products) {
-      precacheImage(NetworkImage(product.imageUrl), context); // Usa el nombre correcto aquí
-    }
-
-
-    setState(() {
-      searchResults.addAll(products);
-    });
   }
 
   void _filterSearchResults(String query) {
@@ -80,6 +65,27 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
         _filterSearchResults('');
       }
     });
+  }
+
+  Widget _buildProductList() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('products').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Center(child: Text('No se encontraron productos.'));
+        }
+
+        products = snapshot.data!.docs.map((doc) => Product.fromFirestore(doc)).toList();
+
+        return isSearching
+            ? ProductList(products: searchResults)
+            : ProductList(products: products);
+      },
+    );
   }
 
   @override
@@ -204,9 +210,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
                       child: topHeader,
                     ),
                     SliverToBoxAdapter(
-                      child: isSearching
-                          ? ProductList(products: searchResults)
-                          : ProductList(products: products),
+                      child: _buildProductList(),
                     ),
                     SliverToBoxAdapter(
                       child: tabBar,

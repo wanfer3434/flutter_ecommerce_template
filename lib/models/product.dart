@@ -3,13 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Product {
   final String name;
   final String description;
-  final String imageUrl; // Asegúrate de que esta propiedad esté definida
+  final String imageUrl;
   final double price;
 
   Product({
     required this.name,
     required this.description,
-    required this.imageUrl, // Asegúrate de que esta propiedad esté definida
+    required this.imageUrl,
     required this.price,
   });
 
@@ -19,7 +19,7 @@ class Product {
     return Product(
       name: data['name'] ?? '',
       description: data['description'] ?? '',
-      imageUrl: data['imageUrl'] ?? '', // Mapea esto correctamente
+      imageUrl: data['imageUrl'] ?? '', // Asegúrate de mapearlo correctamente
       price: (data['price'] is int) ? (data['price'] as int).toDouble() : (data['price'] ?? 0.0),
     );
   }
@@ -29,7 +29,7 @@ class Product {
     return {
       'name': name,
       'description': description,
-      'imageUrl': imageUrl, // Mapea esto correctamente
+      'imageUrl': imageUrl, // Asegúrate de mapearlo correctamente
       'price': price,
     };
   }

@@ -35,10 +35,10 @@ class CategoryCard extends StatelessWidget {
           Container(
             height: 250.0,
             width: double.infinity,
-            child: CachedNetworkImage(
-              imageUrl: imageUrl,
-              placeholder: (context, url) => CircularProgressIndicator(),
-              errorWidget: (context, url, error) => Icon(Icons.error),
+            child: Image.asset(
+              imageUrl,
+              /*placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),*/
             ),
           ),
           Text(
