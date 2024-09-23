@@ -1,36 +1,47 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Product {
+  final String id;  // Propiedad para almacenar el ID del producto
   final String name;
   final String description;
-  final String imageUrl;
+  final List<String> imageUrls;
   final double price;
+  final double averageRating;
+  final int ratingCount;
 
   Product({
+    required this.id,  // ID requerido
     required this.name,
     required this.description,
-    required this.imageUrl,
+    required this.imageUrls,
     required this.price,
+    this.averageRating = 0.0,
+    this.ratingCount = 0,
   });
 
-  // Método fromFirestore para crear un producto desde un documento de Firestore
+  // Método para crear un producto desde un documento de Firestore
   factory Product.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Product(
-      name: data['name'] ?? '',
+      id: doc.id,  // Usar el ID del documento Firestore
+      name: data['name'] ?? '',  // Valor por defecto si 'name' es null
       description: data['description'] ?? '',
-      imageUrl: data['imageUrl'] ?? '', // Asegúrate de mapearlo correctamente
+      imageUrls: List<String>.from(data['imageUrls'] ?? []),  // Manejar lista vacía si no hay 'imageUrls'
       price: (data['price'] is int) ? (data['price'] as int).toDouble() : (data['price'] ?? 0.0),
+      averageRating: (data['averageRating'] ?? 0.0).toDouble(),  // Asegurar conversión a double
+      ratingCount: data['ratingCount'] ?? 0,  // Valor por defecto si no hay 'ratingCount'
     );
   }
 
-  // Método toMap para convertir el producto en un mapa
+  // Método para convertir un producto en un mapa que se pueda guardar en Firestore
   Map<String, dynamic> toMap() {
     return {
       'name': name,
       'description': description,
-      'imageUrl': imageUrl, // Asegúrate de mapearlo correctamente
+      'imageUrls': imageUrls,
       'price': price,
+      'averageRating': averageRating,
+      'ratingCount': ratingCount,
     };
   }
 }

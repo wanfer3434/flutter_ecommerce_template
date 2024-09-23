@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:ecommerce_int2/firestore_service.dart';
 import 'package:ecommerce_int2/models/product.dart';
 
-
 class ProductForm extends StatefulWidget {
   final String? documentId;
   final Product? existingProduct;
@@ -23,7 +22,8 @@ class _ProductFormState extends State<ProductForm> {
   void initState() {
     super.initState();
     if (widget.existingProduct != null) {
-      _imageController.text = widget.existingProduct!.imageUrl;
+      // Convertir la lista de URLs en una cadena separada por comas
+      _imageController.text = widget.existingProduct!.imageUrls.join(', ');
       _nameController.text = widget.existingProduct!.name;
       _descriptionController.text = widget.existingProduct!.description;
       _priceController.text = widget.existingProduct!.price.toString();
@@ -31,8 +31,15 @@ class _ProductFormState extends State<ProductForm> {
   }
 
   void _submit() async {
+    // Convertir el texto ingresado en una lista de URLs
+    final imageUrls = _imageController.text.split(',').map((url) => url.trim()).toList();
+
+    // Generar un ID único si es un nuevo producto
+    final productId = widget.documentId ?? UniqueKey().toString();  // Puedes usar un método de generación de ID más apropiado
+
     final product = Product(
-      imageUrl: _imageController.text,
+      id: productId,  // Agregar el ID aquí
+      imageUrls: imageUrls,
       name: _nameController.text,
       description: _descriptionController.text,
       price: double.tryParse(_priceController.text) ?? 0,
@@ -59,7 +66,9 @@ class _ProductFormState extends State<ProductForm> {
           children: [
             TextField(
               controller: _imageController,
-              decoration: InputDecoration(labelText: 'Image URL'),
+              decoration: InputDecoration(
+                labelText: 'Image URLs (separated by commas)',
+              ),
             ),
             TextField(
               controller: _nameController,

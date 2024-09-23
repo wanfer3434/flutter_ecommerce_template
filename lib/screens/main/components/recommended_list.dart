@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 
 class RecommendedList extends StatelessWidget {
   final List<Product> products = [
-    Product(imageUrl: 'assets/G54.jpg', name: 'Bag', description: 'Beautiful bag', price: 2.33),
-    Product(imageUrl: 'https://media.istockphoto.com/id/1499948872/es/foto/dise%C3%B1o-moderno-de-la-carcasa-del-tel%C3%A9fono-m%C3%B3vil-pegatinas-de-estilo-retro-textura-sobre-fondo.jpg?s=1024x1024&w=is&k=20&c=4S2HV6y8JLix6lzrAxJae7wtX6h6Nlaeq1N4lBfqfys=', name: 'Cap', description: 'Cap with beautiful design',price:  10),
-    Product(imageUrl: 'https://media.istockphoto.com/id/1348287918/es/foto/fundas-de-silicona-de-colores-para-tel%C3%A9fonos-tecnolog%C3%ADa-actualizada-primer-plano-de-diversos.jpg?s=1024x1024&w=is&k=20&c=EYCb2d_DrSsn-2zeinA79jNRc7V0N6WcOt8-dJIEisI=', name: 'Jeans', description: 'Jeans for you', price: 20),
-    Product(imageUrl: 'assets/Iphon13_Corazzones.jpg', name: 'Woman Shoes', description: 'Shoes with special discount', price: 30),
-    Product(imageUrl: 'assets/Redmi_13c_5g.png', name: 'Bag Express', description: 'Bag for your shops', price: 40),
-    Product(imageUrl: 'assets/Redmi_Note_10s.jpg', name: 'Jeans', description: 'Beautiful Jeans', price:102.33),
-    Product(imageUrl: 'assets/Redmi_note_12.png', name: 'Silver Ring', description: 'Description', price: 52.33),
-    Product(imageUrl: 'assets/shoeman_7.png', name: 'Shoes', description: 'Description', price: 62.33),
-    Product(imageUrl: 'assets/headphone_9.png', name: 'Headphones', description: 'Description', price: 72.33),
+    Product(id: '1', imageUrls: ['assets/G54.jpg'], name: 'Bag', description: 'Beautiful bag', price: 2.33),
+    Product(id: '2', imageUrls: ['https://media.istockphoto.com/id/1499948872/es/foto/dise%C3%B1o-moderno-de-la-carcasa-del-tel%C3%A9fono-m%C3%B3vil-pegatinas-de-estilo-retro-textura-sobre-fondo.jpg?s=1024x1024&w=is&k=20&c=4S2HV6y8JLix6lzrAxJae7wtX6h6Nlaeq1N4lBfqfys='], name: 'Cap', description: 'Cap with beautiful design', price: 10),
+    Product(id: '3', imageUrls: ['https://media.istockphoto.com/id/1348287918/es/foto/fundas-de-silicona-de-colores-para-tel%C3%A9fonos-tecnolog%C3%ADa-actualizada-primer-plano-de-diversos.jpg?s=1024x1024&w=is&k=20&c=EYCb2d_DrSsn-2zeinA79jNRc7V0N6WcOt8-dJIEisI='], name: 'Jeans', description: 'Jeans for you', price: 20),
+    Product(id: '4', imageUrls: ['assets/Iphon13_Corazzones.jpg'], name: 'Woman Shoes', description: 'Shoes with special discount', price: 30),
+    Product(id: '5', imageUrls: ['assets/Redmi_13c_5g.png'], name: 'Bag Express', description: 'Bag for your shops', price: 40),
+    Product(id: '6', imageUrls: ['assets/Redmi_Note_10s.jpg'], name: 'Jeans', description: 'Beautiful Jeans', price: 102.33),
+    Product(id: '7', imageUrls: ['assets/Redmi_note_12.png'], name: 'Silver Ring', description: 'Description', price: 52.33),
+    Product(id: '8', imageUrls: ['assets/shoeman_7.png'], name: 'Shoes', description: 'Description', price: 62.33),
+    Product(id: '9', imageUrls: ['assets/headphone_9.png'], name: 'Headphones', description: 'Description', price: 72.33),
   ];
 
   @override
@@ -83,10 +83,11 @@ class RecommendedList extends StatelessWidget {
                                 ),
                               ),
                               child: Hero(
-                                tag: products[index].imageUrl,
+                                tag: products[index].imageUrls[0], // Accede a la primera imagen de la lista
                                 child: Image.network(
-                                  products[index].imageUrl,
+                                  products[index].imageUrls[0], // Accede a la primera imagen de la lista
                                   fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) => Icon(Icons.error), // Maneja errores de carga
                                 ),
                               ),
                             ),
