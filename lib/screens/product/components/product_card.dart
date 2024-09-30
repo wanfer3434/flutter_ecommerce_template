@@ -83,9 +83,9 @@ class _ProductCardState extends State<ProductCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.of(context).push(
+      /*onTap: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => ProductPage(product: widget.product)),
-      ),
+      ),*/
       child: Container(
         height: widget.height,
         width: widget.width - 28,
@@ -101,14 +101,19 @@ class _ProductCardState extends State<ProductCard> {
               onTap: _changeImage, // Cambia la imagen al tocar
               child: Align(
                 alignment: Alignment.topCenter,
-                child: Container(
-                  padding: EdgeInsets.all(16.0),
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  height: MediaQuery.of(context).size.height * 0.25, // Ajuste dinámico
-                  child: Image.network(
-                    widget.product.imageUrls[_currentImageIndex], // Mostrar la imagen actual
-                    fit: BoxFit.cover,
-                  ),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Container(
+                      padding: EdgeInsets.all(16.0),
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: MediaQuery.of(context).size.height * 0.25, // Ajuste dinámico
+                      child: Image.network(
+                        widget.product.imageUrls[_currentImageIndex], // Mostrar la imagen actual
+                        fit: BoxFit.cover,
+                        height: constraints.maxWidth < 600 ? 190 : 300, // Ajuste basado en constraints
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
@@ -116,7 +121,7 @@ class _ProductCardState extends State<ProductCard> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 6.0),
               decoration: BoxDecoration(
-                color: Colors.orange,
+                color: Colors.transparent,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(10),
                 ),
@@ -130,18 +135,18 @@ class _ProductCardState extends State<ProductCard> {
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 14.0,
-                      color: Colors.white,
+                      color: Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 4.0),
+                  SizedBox(height: 1.9),
                   // Descripción del producto
                   Text(
                     widget.product.description,
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 12.0,
-                      color: Colors.white70,
+                      color: Colors.black,
                     ),
                   ),
                   SizedBox(height: 4.0),
@@ -151,10 +156,10 @@ class _ProductCardState extends State<ProductCard> {
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 12.0,
-                      color: Colors.white,
+                      color: Colors.black87,
                     ),
                   ),
-                  SizedBox(height: 8.0),
+                  SizedBox(height: 4.0),
                   // Widget de calificación con estrellas
                   RatingBar.builder(
                     initialRating: _currentRating,
@@ -174,13 +179,13 @@ class _ProductCardState extends State<ProductCard> {
                       _saveRating(rating); // Guarda la calificación
                     },
                   ),
-                  SizedBox(height: 4.0),
+                  SizedBox(height: 3.0),
                   // Promedio de calificación
                   Text(
                     'Promedio: $_averageRating (${_ratingCount} opiniones)',
                     style: TextStyle(
                       fontSize: 12.0,
-                      color: Colors.white70,
+                      color: Colors.black26,
                     ),
                   ),
                 ],

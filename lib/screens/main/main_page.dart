@@ -6,12 +6,12 @@ import 'package:ecommerce_int2/screens/notifications_page.dart';
 import 'package:ecommerce_int2/screens/profile_page.dart';
 import 'package:ecommerce_int2/screens/shop/check_out_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
 import '../../custom_background.dart';
 import '../category/category_list_page.dart';
 import 'components/custom_bottom_bar.dart';
 import 'components/product_list.dart';
 import 'components/tab_view.dart';
+import 'package:video_player/video_player.dart';
 
 List<String> timelines = [
   'Destacado Semana',
@@ -32,12 +32,58 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
   bool isSearching = false;
   List<Product> products = [];
   List<Product> searchResults = [];
+  late VideoPlayerController _videoController;
+  int _currentVideoIndex = 0;
+
+  // Listado de URLs de los videos
+  final List<String> _videoUrls = [
+    'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/Forro%20con%20lentes.mp4?alt=media&token=500bfa90-ec9c-4ec1-b739-b17000f07262',
+    'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/Protector%20punta%20de%20cable.mp4?alt=media&token=5de3833b-850d-4116-a007-2d5e80250e3b',
+    'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/iphone_escarchado_proteccion_lentes.mp4?alt=media&token=638f8de4-c7a6-45e4-a18f-1ced8039fb99',
+  ];
 
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: 5, vsync: this);
     bottomTabController = TabController(length: 4, vsync: this);
+    _initializeVideo(_videoUrls[_currentVideoIndex]);
+  }
+
+  // Inicializa el controlador de video
+  void _initializeVideo(String videoUrl) {
+    _videoController = VideoPlayerController.networkUrl(Uri.parse(videoUrl))
+      ..initialize().then((_) {
+        setState(() {
+          _videoController.play(); // Reproduce el video automáticamente
+        });
+      }).catchError((error) {
+        print('Error al cargar el video: $error');
+      });
+
+    // Escucha el estado del video y reproduce el siguiente automáticamente
+    _videoController.addListener(() {
+      if (_videoController.value.isInitialized && !_videoController.value.isPlaying) {
+        _videoController.play(); // Reproduce el video si está listo pero no se está reproduciendo
+      }
+      if (_videoController.value.position == _videoController.value.duration) {
+        _playNextVideo(); // Reproduce el siguiente video al finalizar
+      }
+    });
+  }
+
+  // Reproduce el siguiente video en la lista
+  void _playNextVideo() {
+    setState(() {
+      _currentVideoIndex = (_currentVideoIndex + 1) % _videoUrls.length; // Repite la lista cuando llega al final
+      _initializeVideo(_videoUrls[_currentVideoIndex]);
+    });
+  }
+
+  @override
+  void dispose() {
+    _videoController.dispose();
+    super.dispose();
   }
 
   void _filterSearchResults(String query) {
@@ -88,6 +134,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
     );
   }
 
+  // Construye el widget del reproductor de video
+  Widget _buildVideoPlayer() {
+    return _videoController.value.isInitialized
+        ? AspectRatio(
+      aspectRatio: _videoController.value.aspectRatio,
+      child: VideoPlayer(_videoController),
+    )
+        : Center(child: CircularProgressIndicator()); // Muestra un indicador de carga mientras se inicializa el video
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget topHeader = Padding(
@@ -100,7 +156,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
               onTap: () {
                 setState(() {
                   selectedTimeline = timelines[0];
-                  // Actualizar productos según la línea de tiempo seleccionada
                 });
               },
               child: Text(
@@ -116,7 +171,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
               onTap: () {
                 setState(() {
                   selectedTimeline = timelines[1];
-                  // Actualizar productos según la línea de tiempo seleccionada
                 });
               },
               child: Text(timelines[1],
@@ -131,7 +185,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
               onTap: () {
                 setState(() {
                   selectedTimeline = timelines[2];
-                  // Actualizar productos según la línea de tiempo seleccionada
                 });
               },
               child: Text(timelines[2],
@@ -181,7 +234,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
           IconButton(
             icon: Icon(Icons.notifications),
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => NotificationsPage()));
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => NotificationsPage()));
             },
           ),
           IconButton(
@@ -203,18 +257,20 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
           children: <Widget>[
             SafeArea(
               child: NestedScrollView(
-                headerSliverBuilder:
-                    (BuildContext context, bool innerBoxIsScrolled) {
+                headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     SliverToBoxAdapter(
                       child: topHeader,
+                    ),
+                    SliverToBoxAdapter(
+                      child: _buildVideoPlayer(), // Agrega el reproductor de video aquí
                     ),
                     SliverToBoxAdapter(
                       child: _buildProductList(),
                     ),
                     SliverToBoxAdapter(
                       child: tabBar,
-                    )
+                    ),
                   ];
                 },
                 body: TabView(

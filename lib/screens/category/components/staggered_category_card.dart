@@ -7,13 +7,19 @@ class StaggeredCardCard extends StatefulWidget {
   final String categoryName;
   final String imageUrl; // Cambiado a imageUrl
   final dynamic category; // Agrega esta línea
+  final String description; // Nueva propiedad
+  final double rating; // Nueva propiedad
+  final String whatsappUrl; // Nueva propiedad
 
   const StaggeredCardCard({
     required this.begin,
     required this.end,
     required this.categoryName,
     required this.imageUrl, // Cambiado aquí
-    required this.category, // Agrega esta línea
+    required this.category,
+    required this.description,
+    required this.rating,
+    required this.whatsappUrl, // Agrega esta línea
   });
 
   @override
@@ -68,6 +74,9 @@ class _StaggeredCardCardState extends State<StaggeredCardCard>
         end: widget.end,
         imageUrl: widget.imageUrl, // Cambiado aquí
         category: widget.category, // Asegúrate de pasar el parámetro 'category'
+        description: widget.description,
+        rating: widget.rating,
+        whatsappUrl: widget.whatsappUrl,
       ),
     );
   }

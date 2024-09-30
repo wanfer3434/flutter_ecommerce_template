@@ -38,9 +38,9 @@ class TabView extends StatelessWidget {
                   itemBuilder: (_, index) {
                     final category = categories[index];
 
-                    // Verificar si la imagen, el nombre y otros detalles están disponibles
-                    if (category.image == null || category.image.isEmpty) {
-                      print('Image URL is missing for category: ${category.category}');
+                    // Verificar si la lista de imágenes tiene al menos una URL válida
+                    if (category.imageUrls.isEmpty || category.imageUrls[0].isEmpty) {
+                      print('Image URL is missing for category: ${category.name}');
                     }
 
                     return CategoryCard(
@@ -50,9 +50,12 @@ class TabView extends StatelessWidget {
                       ),
                       begin: category.begin,
                       end: category.end,
-                      categoryName: category.category ?? 'Unnamed Category',
-                      imageUrl: category.image ?? '', // Asegúrate de que la URL es válida
+                      categoryName: category.name ?? 'Unnamed Category',
+                      imageUrl: category.imageUrls.isNotEmpty ? category.imageUrls[0] : '',  // Verificar que haya al menos una imagen
                       category: category,
+                      description: category.description ?? '',
+                      rating: category.averageRating ?? 0.0,
+                      whatsappUrl: category.whatsappUrl ?? '',
                     );
                   },
                 ),

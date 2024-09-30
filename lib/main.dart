@@ -5,6 +5,7 @@ import 'package:ecommerce_int2/models/category.dart';
 import 'package:ecommerce_int2/screens/category/category_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:ecommerce_int2/screens/main/main_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           fontFamily: "Montserrat",
         ),
-        home: SplashScreen(),
+        home: MainPage(),
       ),
     );
   }

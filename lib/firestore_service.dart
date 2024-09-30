@@ -62,7 +62,7 @@ Future<void> initializeProducts() async {
       ],
       name: 'REDMI',
       description: 'NOTE 12 DISEÑO, Redmi 13c silicona',
-      price: 25.000,
+      price: 25000,
     ),
     Product(
       id: 'samsung_001', // Asegúrate de pasar un 'id' aquí
@@ -72,7 +72,7 @@ Future<void> initializeProducts() async {
       ],
       name: 'Samsung A22',
       description: 'A22 4g,A22 5G',
-      price: 30.000,
+      price: 30000,
     ),
     Product(
       id: 'sasung_A15', // Asegúrate de pasar un 'id' aquí
@@ -82,7 +82,7 @@ Future<void> initializeProducts() async {
       ],
       name: 'Samsung',
       description: 'A21S,A15',
-      price: 25.000,
+      price: 25000,
     ),
     Product(
       id: 'samsung_Camara', // Asegúrate de pasar un 'id' aquí
@@ -92,7 +92,7 @@ Future<void> initializeProducts() async {
       ],
       name: 'Camara Digital',
       description: 'Samsung Camara Digital',
-      price: 30.000,
+      price: 300000,
     ),
     // Añade más productos de la misma manera
   ];

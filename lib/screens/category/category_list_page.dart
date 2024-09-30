@@ -68,7 +68,7 @@ class _CategoryListPageState extends State<CategoryListPage> {
                   if (value.isNotEmpty) {
                     List<Category> tempList = [];
                     categories.forEach((category) {
-                      if (category.category.toLowerCase().contains(value.toLowerCase())) {
+                      if (category.name.toLowerCase().contains(value.toLowerCase())) {
                         tempList.add(category);
                       }
                     });
@@ -94,8 +94,13 @@ class _CategoryListPageState extends State<CategoryListPage> {
                   child: StaggeredCardCard(
                     begin: searchResults[index].begin,
                     end: searchResults[index].end,
-                    categoryName: searchResults[index].category,
-                    imageUrl: searchResults[index].image,
+                    categoryName: searchResults[index].name,
+                    imageUrl: searchResults[index].imageUrls.isNotEmpty
+                        ? searchResults[index].imageUrls[0]
+                        : '', // Selecciona la primera imagen o una URL vacía,
+                    description: searchResults[index].description, // Descripción
+                    rating: searchResults[index].averageRating, // Calificación
+                    whatsappUrl: searchResults[index].whatsappUrl, // URL WhatsApp
                     category: searchResults[index],
                   ),
                 ),
