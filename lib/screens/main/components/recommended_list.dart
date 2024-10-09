@@ -140,7 +140,7 @@ class _RecommendedListState extends State<RecommendedList> {
                                       ),
                                       overflow: TextOverflow.ellipsis,
                                     ),
-                                    SizedBox(height: 1.9),
+                                    SizedBox(height: 0.7),
                                     Text(
                                       product.description,
                                       style: TextStyle(
@@ -149,7 +149,7 @@ class _RecommendedListState extends State<RecommendedList> {
                                       ),
                                       overflow: TextOverflow.ellipsis,
                                     ),
-                                    SizedBox(height: 1.9),
+                                    SizedBox(height: 0.7),
                                     Text(
                                       '\$${product.price.toStringAsFixed(0)}',
                                       style: TextStyle(
@@ -158,7 +158,7 @@ class _RecommendedListState extends State<RecommendedList> {
                                         color: Colors.black87,
                                       ),
                                     ),
-                                    SizedBox(height: 1.9),
+                                    SizedBox(height: 0.7),
                                     // Barra de calificación
                                     RatingBar.builder(
                                       initialRating: _currentRatings[product.id]!,
@@ -175,7 +175,7 @@ class _RecommendedListState extends State<RecommendedList> {
                                         _saveRating(product.id, rating);
                                       },
                                     ),
-                                    SizedBox(height: 1.9),
+                                    SizedBox(height: 0.5),
                                     // Mostrar calificación promedio y número de opiniones
                                     Text(
                                       'Promedio: ${_currentRatings[product.id]} (${_ratingCounts[product.id]} opiniones)',

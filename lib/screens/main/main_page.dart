@@ -37,9 +37,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
 
   // Listado de URLs de los videos
   final List<String> _videoUrls = [
-    'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/Forro%20con%20lentes.mp4?alt=media&token=500bfa90-ec9c-4ec1-b739-b17000f07262',
-    'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/Protector%20punta%20de%20cable.mp4?alt=media&token=5de3833b-850d-4116-a007-2d5e80250e3b',
-    'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/iphone_escarchado_proteccion_lentes.mp4?alt=media&token=638f8de4-c7a6-45e4-a18f-1ced8039fb99',
+    'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/iphone_escarchado.mp4?alt=media&token=a8057861-7758-40ef-8b24-193f02516d66',
+    'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/dise%C3%B1o%20lotso.mp4?alt=media&token=722ecb84-67ee-4fe3-bf75-7a0f5c373d52',
+    'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/esfera_luz.mp4?alt=media&token=bf2605bc-06c0-428e-8d43-1a66a0020f2d',
   ];
 
   @override
@@ -51,34 +51,37 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
   }
 
   // Inicializa el controlador de video
-  void _initializeVideo(String videoUrl) {
-    _videoController = VideoPlayerController.networkUrl(Uri.parse(videoUrl))
-      ..initialize().then((_) {
-        setState(() {
-          _videoController.play(); // Reproduce el video automáticamente
+    void _initializeVideo(String videoUrl) {
+      _videoController = VideoPlayerController.networkUrl(Uri.parse(videoUrl))
+        ..addListener(() {
+          if (_videoController.value.isInitialized && !_videoController.value.isPlaying) {
+            // Reproduce solo si está inicializado
+            _videoController.play();
+          }
+        })
+        ..initialize().then((_) {
+          setState(() {});
+        }).catchError((error) {
+          print('Error al cargar el video: $error');
         });
-      }).catchError((error) {
-        print('Error al cargar el video: $error');
+
+      _videoController.addListener(() {
+        if (_videoController.value.position >= _videoController.value.duration) {
+          _playNextVideo(); // Cambia al siguiente video cuando termine
+        }
       });
+    }
 
-    // Escucha el estado del video y reproduce el siguiente automáticamente
-    _videoController.addListener(() {
-      if (_videoController.value.isInitialized && !_videoController.value.isPlaying) {
-        _videoController.play(); // Reproduce el video si está listo pero no se está reproduciendo
-      }
-      if (_videoController.value.position == _videoController.value.duration) {
-        _playNextVideo(); // Reproduce el siguiente video al finalizar
-      }
-    });
-  }
 
-  // Reproduce el siguiente video en la lista
   void _playNextVideo() {
+    _videoController.dispose(); // Asegurarse de que el controlador anterior se libere correctamente
     setState(() {
-      _currentVideoIndex = (_currentVideoIndex + 1) % _videoUrls.length; // Repite la lista cuando llega al final
+      _currentVideoIndex = (_currentVideoIndex + 1) % _videoUrls.length;
       _initializeVideo(_videoUrls[_currentVideoIndex]);
     });
   }
+
+
 
   @override
   void dispose() {
@@ -95,7 +98,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
         }
       });
     } else {
-      tempList.addAll(products); // Mostrar todos los productos si no hay consulta
+      tempList.addAll(
+          products); // Mostrar todos los productos si no hay consulta
     }
     setState(() {
       searchResults.clear();
@@ -125,7 +129,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
           return Center(child: Text('No se encontraron productos.'));
         }
 
-        products = snapshot.data!.docs.map((doc) => Product.fromFirestore(doc)).toList();
+        products = snapshot.data!.docs.map((doc) => Product.fromFirestore(doc))
+            .toList();
 
         return isSearching
             ? ProductList(products: searchResults)
@@ -135,67 +140,93 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
   }
 
   // Construye el widget del reproductor de video
+  // Construye el widget del reproductor de video
   Widget _buildVideoPlayer() {
+    final mediaQuery = MediaQuery.of(context);
+    final screenHeight = mediaQuery.size.height;
+    final screenWidth = mediaQuery.size.width;
+
+    // Definir dimensiones dinámicas según el tamaño de la pantalla
+    double videoHeight;
+    double videoWidth = screenWidth * 0.30
+    ; // Ajusta el ancho dinámicamente
+
+    if (screenHeight > 1200) {
+      // Pantallas grandes como tablets
+      videoHeight = screenHeight * 0.5;
+    } else if (screenHeight > 600 && screenHeight <= 1200) {
+      // Pantallas medianas como móviles grandes
+      videoHeight = screenHeight * 0.4;
+    } else {
+      // Pantallas pequeñas como móviles compactos
+      videoHeight = screenHeight * 0.25;
+    }
+
     return _videoController.value.isInitialized
-        ? AspectRatio(
-      aspectRatio: _videoController.value.aspectRatio,
-      child: VideoPlayer(_videoController),
+        ? Center(
+      child: Container(
+        height: videoHeight,
+        width: videoWidth,
+        child: AspectRatio(
+          aspectRatio: _videoController.value.aspectRatio,
+          child: VideoPlayer(_videoController),
+        ),
+      ),
     )
-        : Center(child: CircularProgressIndicator()); // Muestra un indicador de carga mientras se inicializa el video
+        : Center(child: CircularProgressIndicator());
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget topHeader = Padding(
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          Flexible(
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  selectedTimeline = timelines[0];
-                });
-              },
-              child: Text(
-                timelines[0],
+    Widget topHeader = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        Flexible(
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                selectedTimeline = timelines[0];
+              });
+            },
+            child: Text(
+              timelines[0],
+              style: TextStyle(
+                  fontSize: timelines[0] == selectedTimeline ? 20 : 14,
+                  color: Colors.grey),
+            ),
+          ),
+        ),
+        Flexible(
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                selectedTimeline = timelines[1];
+              });
+            },
+            child: Text(
+                timelines[1],
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontSize: timelines[0] == selectedTimeline ? 20 : 14,
-                    color: Colors.grey),
-              ),
-            ),
+                    fontSize: timelines[1] == selectedTimeline ? 20 : 14,
+                    color: Colors.grey)),
           ),
-          Flexible(
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  selectedTimeline = timelines[1];
-                });
-              },
-              child: Text(timelines[1],
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: timelines[1] == selectedTimeline ? 20 : 14,
-                      color: Colors.grey)),
-            ),
+        ),
+        Flexible(
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                selectedTimeline = timelines[2];
+              });
+            },
+            child: Text(
+                timelines[2],
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    fontSize: timelines[2] == selectedTimeline ? 20 : 14,
+                    color: Colors.grey)),
           ),
-          Flexible(
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  selectedTimeline = timelines[2];
-                });
-              },
-              child: Text(timelines[2],
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                      fontSize: timelines[2] == selectedTimeline ? 20 : 14,
-                      color: Colors.grey)),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
 
     Widget tabBar = TabBar(
@@ -207,9 +238,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
         Tab(text: 'Bluetooth'),
       ],
       labelStyle: TextStyle(fontSize: 16.0),
-      unselectedLabelStyle: TextStyle(
-        fontSize: 14.0,
-      ),
+      unselectedLabelStyle: TextStyle(fontSize: 14.0),
       labelColor: Colors.grey,
       unselectedLabelColor: Color.fromRGBO(0, 0, 0, 0.5),
       isScrollable: true,
@@ -241,7 +270,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
           IconButton(
             icon: SvgPicture.asset(
               'assets/icons/search_icon.svg',
-              height: 24, // Ajustar según el tamaño de tu icono
+              height: 24,
               width: 24,
             ),
             onPressed: _toggleSearch,
@@ -257,25 +286,18 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
           children: <Widget>[
             SafeArea(
               child: NestedScrollView(
-                headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                headerSliverBuilder: (BuildContext context,
+                    bool innerBoxIsScrolled) {
                   return <Widget>[
+                    SliverToBoxAdapter(child: topHeader),
                     SliverToBoxAdapter(
-                      child: topHeader,
+                      child: _buildVideoPlayer(), // Sin Padding
                     ),
-                    SliverToBoxAdapter(
-                      child: _buildVideoPlayer(), // Agrega el reproductor de video aquí
-                    ),
-                    SliverToBoxAdapter(
-                      child: _buildProductList(),
-                    ),
-                    SliverToBoxAdapter(
-                      child: tabBar,
-                    ),
+                    SliverToBoxAdapter(child: _buildProductList()),
+                    SliverToBoxAdapter(child: tabBar),
                   ];
                 },
-                body: TabView(
-                  tabController: tabController,
-                ),
+                body: TabView(tabController: tabController),
               ),
             ),
             CategoryListPage(),

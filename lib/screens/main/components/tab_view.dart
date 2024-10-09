@@ -31,9 +31,9 @@ class TabView extends StatelessWidget {
             SliverToBoxAdapter(
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                height: 285.0, // Altura fija para la lista de categorías
+                height: MediaQuery.of(context).size.height * 0.35, // Ajusta el 30% del alto de la pantalla
                 child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
+                  scrollDirection: Axis.horizontal,// Verificar si la lista de imágenes tiene al menos una URL válida
                   itemCount: categories.length,
                   itemBuilder: (_, index) {
                     final category = categories[index];
@@ -62,7 +62,7 @@ class TabView extends StatelessWidget {
               ),
             ),
             SliverToBoxAdapter(
-              child: SizedBox(height: 8.0), // Espacio entre la lista de categorías y la lista recomendada
+              child: SizedBox(height: 1.0), // Espacio entre la lista de categorías y la lista recomendada
             ),
             SliverFillRemaining(
               child: RecommendedList(),

@@ -28,7 +28,7 @@ class CategoryCard extends StatelessWidget {
 
   Widget _buildAnimation(BuildContext context, Widget? child) {
     return Container(
-      width: 240.0,
+      width: MediaQuery.of(context).size.width * 0.60, // Ajuste dinámico
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [begin, end],
@@ -44,7 +44,7 @@ class CategoryCard extends StatelessWidget {
             placeholder: (context, url) => CircularProgressIndicator(),
             errorWidget: (context, url, error) => Icon(Icons.error),
           ),
-          SizedBox(height: 1.0),
+         // SizedBox(height: 1.0),
           Text(
             categoryName,
             style: TextStyle(
@@ -53,41 +53,38 @@ class CategoryCard extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          SizedBox(height: 1.0),
+          //SizedBox(height: 1.0),
           Text(
             description,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 14,
               color: Colors.white70,
             ),
           ),
-          SizedBox(height: 1.0),
+          //SizedBox(height: 1.0),
           Row(
             children: [
               Icon(Icons.star, color: Colors.yellow),
-              SizedBox(height: 1.0),
+              SizedBox(width: 1.0), // Espacio entre estrella y rating
               Text(
                 '$rating',
                 style: TextStyle(
                   color: Colors.white,
                 ),
               ),
+              Spacer(), // Empuja el botón de WhatsApp hacia la derecha
+              IconButton(
+                icon: FaIcon(FontAwesomeIcons.whatsapp, color: Colors.green),
+                onPressed: () async {
+                  final Uri whatsappUri = Uri.parse(whatsappUrl);
+                  if (await canLaunchUrl(whatsappUri)) {
+                    await launchUrl(whatsappUri);
+                  } else {
+                    throw 'No se puede abrir $whatsappUrl';
+                  }
+                },
+              ),
             ],
-          ),
-          SizedBox(height: 1.0), // Espaciado entre la calificación y el botón de WhatsApp
-          Align(
-            alignment: Alignment.topLeft, // Alinea el botón de WhatsApp a la derecha
-            child: IconButton(
-              icon: FaIcon(FontAwesomeIcons.whatsapp, color: Colors.green),
-              onPressed: () async {
-                final Uri whatsappUri = Uri.parse(whatsappUrl); // Convertir el string a Uri
-                if (await canLaunchUrl(whatsappUri)) {
-                  await launchUrl(whatsappUri); // Redirige a WhatsApp usando launchUrl
-                } else {
-                  throw 'No se puede abrir $whatsappUrl';
-                }
-              },
-            ),
           ),
         ],
       ),
