@@ -8,86 +8,111 @@ class CategoryCard extends StatelessWidget {
   final Color begin;
   final Color end;
   final String categoryName;
-  final String imageUrl; // Cambié el nombre de assetPath a imageUrl
+  final String imageUrl; // Nombre de la imagen
   final String description; // Nueva propiedad
   final double rating; // Nueva propiedad
   final String whatsappUrl; // Nueva propiedad
   final Animation<double> controller;
+  final double imageHeight; // Nuevo parámetro
 
   CategoryCard({
     required this.controller,
     required this.begin,
     required this.end,
     required this.categoryName,
-    required this.imageUrl, // Cambié el nombre aquí también
+    required this.imageUrl,
     required this.description,
     required this.rating,
     required this.whatsappUrl,
     required Category category,
+    this.imageHeight = 100.0, // Valor por defecto para la altura de la imagen
   });
 
   Widget _buildAnimation(BuildContext context, Widget? child) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.60, // Ajuste dinámico
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [begin, end],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.all(Radius.circular(2)),
-      ),
-      child: Column(
-        children: [
-          CachedNetworkImage(
-            imageUrl: imageUrl, // Imagen desde la URL
-            placeholder: (context, url) => CircularProgressIndicator(),
-            errorWidget: (context, url, error) => Icon(Icons.error),
-          ),
-         // SizedBox(height: 1.0),
-          Text(
-            categoryName,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Ajuste dinámico del ancho según el tamaño de la pantalla
+        double cardWidth;
+        if (constraints.maxWidth < 600) {
+          // Para dispositivos móviles
+          cardWidth = constraints.maxWidth * 0.60; // 60% del ancho
+        } else {
+          // Para dispositivos de escritorio
+          cardWidth = 300; // Ancho fijo para escritorio
+        }
+
+        return Container(
+          width: cardWidth,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [begin, end],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
+            borderRadius: BorderRadius.all(Radius.circular(8)), // Redondeo mejorado
           ),
-          //SizedBox(height: 1.0),
-          Text(
-            description,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white70,
-            ),
-          ),
-          //SizedBox(height: 1.0),
-          Row(
+          child: Column(
             children: [
-              Icon(Icons.star, color: Colors.yellow),
-              SizedBox(width: 1.0), // Espacio entre estrella y rating
+              // Ajustar la altura de la imagen aquí
+              CachedNetworkImage(
+                imageUrl: imageUrl,
+                placeholder: (context, url) => Container(
+                  height: imageHeight,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  height: imageHeight,
+                  child: Center(child: Icon(Icons.error)),
+                ),
+                height: imageHeight, // Usar el nuevo parámetro de altura
+                fit: BoxFit.cover, // Ajuste para que la imagen cubra el espacio
+              ),
+              SizedBox(height: 8.0), // Espacio entre la imagen y el texto
               Text(
-                '$rating',
+                categoryName,
                 style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
-              Spacer(), // Empuja el botón de WhatsApp hacia la derecha
-              IconButton(
-                icon: FaIcon(FontAwesomeIcons.whatsapp, color: Colors.green),
-                onPressed: () async {
-                  final Uri whatsappUri = Uri.parse(whatsappUrl);
-                  if (await canLaunchUrl(whatsappUri)) {
-                    await launchUrl(whatsappUri);
-                  } else {
-                    throw 'No se puede abrir $whatsappUrl';
-                  }
-                },
+              SizedBox(height: 4.0), // Espacio entre el nombre y la descripción
+              Text(
+                description,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white70,
+                ),
+              ),
+              SizedBox(height: 8.0), // Espacio entre la descripción y el rating
+              Row(
+                children: [
+                  Icon(Icons.star, color: Colors.yellow),
+                  SizedBox(width: 4.0), // Espacio entre estrella y rating
+                  Text(
+                    '$rating',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  Spacer(),
+                  IconButton(
+                    icon: FaIcon(FontAwesomeIcons.whatsapp, color: Colors.green),
+                    onPressed: () async {
+                      final Uri whatsappUri = Uri.parse(whatsappUrl);
+                      if (await canLaunchUrl(whatsappUri)) {
+                        await launchUrl(whatsappUri);
+                      } else {
+                        throw 'No se puede abrir $whatsappUrl';
+                      }
+                    },
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

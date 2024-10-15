@@ -29,38 +29,52 @@ class TabView extends StatelessWidget {
         CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.35, // Ajusta el 30% del alto de la pantalla
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,// Verificar si la lista de imágenes tiene al menos una URL válida
-                  itemCount: categories.length,
-                  itemBuilder: (_, index) {
-                    final category = categories[index];
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  bool isDesktop = constraints.maxWidth > 600;
 
-                    // Verificar si la lista de imágenes tiene al menos una URL válida
-                    if (category.imageUrls.isEmpty || category.imageUrls[0].isEmpty) {
-                      print('Image URL is missing for category: ${category.name}');
-                    }
+                  // Define la altura del contenedor
+                  double containerHeight = isDesktop
+                      ? MediaQuery.of(context).size.height * 0.68  // Altura para escritorio
+                      : MediaQuery.of(context).size.height * 0.30; // Altura para móvil
 
-                    return CategoryCard(
-                      controller: AnimationController(
-                        vsync: Scaffold.of(context), // Proporciona un vsync adecuado
-                        duration: const Duration(milliseconds: 300),
-                      ),
-                      begin: category.begin,
-                      end: category.end,
-                      categoryName: category.name ?? 'Unnamed Category',
-                      imageUrl: category.imageUrls.isNotEmpty ? category.imageUrls[0] : '',  // Verificar que haya al menos una imagen
-                      category: category,
-                      description: category.description ?? '',
-                      rating: category.averageRating ?? 0.0,
-                      whatsappUrl: category.whatsappUrl ?? '',
-                    );
-                  },
-                ),
+                  // Ajusta la altura de la imagen
+                  double imageHeight = isDesktop ? 290.0 : containerHeight * 1.90; // Aumenta el tamaño de la imagen
+
+                  return Container(
+                    width: constraints.maxWidth,
+                    height: containerHeight,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: categories.length,
+                      itemBuilder: (_, index) {
+                        final category = categories[index];
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: CategoryCard(
+                            controller: AnimationController(
+                              vsync: Scaffold.of(context),
+                              duration: const Duration(milliseconds: 300),
+                            ),
+                            begin: category.begin,
+                            end: category.end,
+                            categoryName: category.name ?? 'Unnamed Category',
+                            imageUrl: category.imageUrls.isNotEmpty ? category.imageUrls[0] : '',
+                            category: category,
+                            description: category.description ?? '',
+                            rating: category.averageRating ?? 0.0,
+                            whatsappUrl: category.whatsappUrl ?? '',
+                            imageHeight: imageHeight,  // Usar la altura ajustada
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
             ),
+
             SliverToBoxAdapter(
               child: SizedBox(height: 1.0), // Espacio entre la lista de categorías y la lista recomendada
             ),

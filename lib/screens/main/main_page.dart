@@ -5,17 +5,17 @@ import 'package:ecommerce_int2/models/product.dart';
 import 'package:ecommerce_int2/screens/notifications_page.dart';
 import 'package:ecommerce_int2/screens/profile_page.dart';
 import 'package:ecommerce_int2/screens/shop/check_out_page.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../../custom_background.dart';
 import '../category/category_list_page.dart';
+import 'components/AnotherPage.dart';
+import 'components/banner_widget.dart'; // Importa el widget del banner
 import 'components/custom_bottom_bar.dart';
 import 'components/product_list.dart';
 import 'components/tab_view.dart';
-import 'package:video_player/video_player.dart';
 
 List<String> timelines = [
   'Destacado Semana',
-  'Mejor de Julio Día del Padre',
+  'Mejor de Octubre Helloween',
   'Mejor de 2024'
 ];
 String selectedTimeline = 'Presentado Semanalmente';
@@ -25,67 +25,25 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainPage> {
+class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   late TabController tabController;
   late TabController bottomTabController;
   TextEditingController searchController = TextEditingController();
   bool isSearching = false;
   List<Product> products = [];
   List<Product> searchResults = [];
-  late VideoPlayerController _videoController;
-  int _currentVideoIndex = 0;
-
-  // Listado de URLs de los videos
-  final List<String> _videoUrls = [
-    'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/iphone_escarchado.mp4?alt=media&token=a8057861-7758-40ef-8b24-193f02516d66',
-    'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/dise%C3%B1o%20lotso.mp4?alt=media&token=722ecb84-67ee-4fe3-bf75-7a0f5c373d52',
-    'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/esfera_luz.mp4?alt=media&token=bf2605bc-06c0-428e-8d43-1a66a0020f2d',
-  ];
 
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: 5, vsync: this);
     bottomTabController = TabController(length: 4, vsync: this);
-    _initializeVideo(_videoUrls[_currentVideoIndex]);
   }
-
-  // Inicializa el controlador de video
-    void _initializeVideo(String videoUrl) {
-      _videoController = VideoPlayerController.networkUrl(Uri.parse(videoUrl))
-        ..addListener(() {
-          if (_videoController.value.isInitialized && !_videoController.value.isPlaying) {
-            // Reproduce solo si está inicializado
-            _videoController.play();
-          }
-        })
-        ..initialize().then((_) {
-          setState(() {});
-        }).catchError((error) {
-          print('Error al cargar el video: $error');
-        });
-
-      _videoController.addListener(() {
-        if (_videoController.value.position >= _videoController.value.duration) {
-          _playNextVideo(); // Cambia al siguiente video cuando termine
-        }
-      });
-    }
-
-
-  void _playNextVideo() {
-    _videoController.dispose(); // Asegurarse de que el controlador anterior se libere correctamente
-    setState(() {
-      _currentVideoIndex = (_currentVideoIndex + 1) % _videoUrls.length;
-      _initializeVideo(_videoUrls[_currentVideoIndex]);
-    });
-  }
-
-
 
   @override
   void dispose() {
-    _videoController.dispose();
+    tabController.dispose();
+    bottomTabController.dispose();
     super.dispose();
   }
 
@@ -98,8 +56,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
         }
       });
     } else {
-      tempList.addAll(
-          products); // Mostrar todos los productos si no hay consulta
+      tempList.addAll(products);
     }
     setState(() {
       searchResults.clear();
@@ -124,56 +81,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         }
-
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return Center(child: Text('No se encontraron productos.'));
         }
 
-        products = snapshot.data!.docs.map((doc) => Product.fromFirestore(doc))
-            .toList();
+        products = snapshot.data!.docs.map((doc) => Product.fromFirestore(doc)).toList();
 
         return isSearching
             ? ProductList(products: searchResults)
             : ProductList(products: products);
       },
     );
-  }
-
-  // Construye el widget del reproductor de video
-  // Construye el widget del reproductor de video
-  Widget _buildVideoPlayer() {
-    final mediaQuery = MediaQuery.of(context);
-    final screenHeight = mediaQuery.size.height;
-    final screenWidth = mediaQuery.size.width;
-
-    // Definir dimensiones dinámicas según el tamaño de la pantalla
-    double videoHeight;
-    double videoWidth = screenWidth * 0.30
-    ; // Ajusta el ancho dinámicamente
-
-    if (screenHeight > 1200) {
-      // Pantallas grandes como tablets
-      videoHeight = screenHeight * 0.5;
-    } else if (screenHeight > 600 && screenHeight <= 1200) {
-      // Pantallas medianas como móviles grandes
-      videoHeight = screenHeight * 0.4;
-    } else {
-      // Pantallas pequeñas como móviles compactos
-      videoHeight = screenHeight * 0.25;
-    }
-
-    return _videoController.value.isInitialized
-        ? Center(
-      child: Container(
-        height: videoHeight,
-        width: videoWidth,
-        child: AspectRatio(
-          aspectRatio: _videoController.value.aspectRatio,
-          child: VideoPlayer(_videoController),
-        ),
-      ),
-    )
-        : Center(child: CircularProgressIndicator());
   }
 
   @override
@@ -263,8 +181,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
           IconButton(
             icon: Icon(Icons.notifications),
             onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (_) => NotificationsPage()));
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => NotificationsPage()),
+              );
             },
           ),
           IconButton(
@@ -282,19 +201,42 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainP
         painter: MainBackground(),
         child: TabBarView(
           controller: bottomTabController,
-          physics: NeverScrollableScrollPhysics(),
+          physics: NeverScrollableScrollPhysics(), // Mantén esto si no quieres swipe en tabs.
           children: <Widget>[
             SafeArea(
               child: NestedScrollView(
-                headerSliverBuilder: (BuildContext context,
-                    bool innerBoxIsScrolled) {
+                headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
+                    SliverAppBar(
+                      expandedHeight: 250, // Ajusta la altura del banner
+                      pinned: true,
+                      primary: false, // Permite superposición con la barra de estado
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: BannerWidget(
+                          imageUrl: 'https://i.imgur.com/GaEsmRG.png',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AnotherPage(),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                     SliverToBoxAdapter(child: topHeader),
                     SliverToBoxAdapter(
-                      child: _buildVideoPlayer(), // Sin Padding
+                      child: SingleChildScrollView( // Envuelve en scroll si es necesario.
+                        child: Column(
+                          children: [
+                            _buildProductList(), // Lista de productos.
+                            SizedBox(height: 16), // Espacio entre elementos.
+                            tabBar, // TabBar adicional.
+                          ],
+                        ),
+                      ),
                     ),
-                    SliverToBoxAdapter(child: _buildProductList()),
-                    SliverToBoxAdapter(child: tabBar),
                   ];
                 },
                 body: TabView(tabController: tabController),

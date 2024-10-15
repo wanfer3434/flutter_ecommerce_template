@@ -12,23 +12,23 @@ class RecommendedList extends StatefulWidget {
 
 class _RecommendedListState extends State<RecommendedList> {
   final List<Product> products = [
-    Product(id: '1', imageUrls: ['https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/Dise%C3%B1o_con_Llavero.jpg?alt=media&token=2ce8255a-461a-4cbf-8356-cd6d94182f91',
-      'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/Dise%C3%B1o_Dama.jpg?alt=media&token=15139dd3-115b-4b38-820c-660b3d97f401'], name: 'Forro de Pines', description: 'Dieño para Dama', price: 30000),
-    Product(id: '2', imageUrls: ['https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/A70.jpg?alt=media&token=9ce1e9e7-db1a-4a1c-b529-d5c70d3fdee6',
-      'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/A70.jpg?alt=media&token=9ce1e9e7-db1a-4a1c-b529-d5c70d3fdee6'], name: 'Vidrios para Pantalla', description: 'A70', price: 1000),
-    Product(id: '3', imageUrls: ['https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/Astronautas.jpg?alt=media&token=5a4c5d19-ce85-4b93-8a5d-1130441a736f'], name: 'Botones', description: 'Astronautas', price: 2000),
-    Product(id: '4', imageUrls: ['https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/IMG-20240827-WA0035.jpg?alt=media&token=c07d095f-ba04-440d-8469-6544f7776fc6',
-      'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/IMG-20240827-WA0036.jpg?alt=media&token=c0f3e5f8-58e8-4cb4-b934-110029eef3c0'], name: 'Billete de Colección', description: 'Billete de MIL PESOS ORO', price: 50000),
-    Product(id: '5', imageUrls: ['https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/IMG-20240827-WA0037.jpg?alt=media&token=5d3fd519-6ba2-4825-a97a-75e14eb44e88',
+    Product(id: '1', imageUrls: ['https://i.imgur.com/4mejGU4.jpg',
+      'https://i.imgur.com/3Lk2fcw.jpg'], name: 'Forro con cadena', description: 'Dieño para Dama', price: 30000),
+    Product(id: '2', imageUrls: ['https://i.imgur.com/G4z0HpV.png',
+      'https://i.imgur.com/Xf2TEUR.png'], name: 'Vidrios para Pantalla', description: 'A70', price: 1000),
+    Product(id: '3', imageUrls: ['https://i.imgur.com/5zqRhBS.png'], name: 'Botones', description: 'Astronautas', price: 2000),
+    Product(id: '4', imageUrls: ['https://i.imgur.com/3Lk2fcw.jpg',
+      'https://i.imgur.com/k16kyo7.png'], name: 'cadena de colores', description: 'cadena', price: 5000),
+    Product(id: '5', imageUrls: ['https://i.imgur.com/t1mUHdd.jpg',
       'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/IMG-20240827-WA0038.jpg?alt=media&token=3901ab4b-f309-4f7c-b65c-a04dc91addd6'], name: 'Billete de Colección', description: 'Billete de CINCO PESOS ORO', price: 50000),
-    Product(id: '6', imageUrls: ['https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/lentes_camara.jpg?alt=media&token=cf20f33e-4706-437c-bafd-060be98fcc2a'], name: 'Lentes Para Camara', description: 'Lisos y de Piedra', price: 5000),
+    Product(id: '6', imageUrls: ['https://i.imgur.com/zaMg63b.jpg'], name: 'Lentes Para Camara', description: 'Lisos y de Piedra', price: 5000),
     Product(id: '7', imageUrls: ['https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/Iphone_Silicone.jpg?alt=media&token=c673ce14-832e-4aa3-b9cb-fece81c28c7b',
-      'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/silicone_case.jpg?alt=media&token=ac21db59-c56c-4edf-8fee-d2569d0b356a',
-      'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/iphone_16.jpg?alt=media&token=d2df9db2-0fdf-4a09-bbc9-de26fdb31ef2'], name: 'Iphone', description: 'Forro Silicone Case', price: 20000),
+      'https://i.imgur.com/ziPFySl.jpg',
+      'https://i.imgur.com/VyzRYec.jpg'], name: 'Iphone', description: 'Forro Silicone Case', price: 20000),
     Product(id: '8', imageUrls: ['https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/soporte_plano_color_para_celular.jpg?alt=media&token=2dc611f5-7e21-4284-b5a0-2217a772f504'], name: 'Soporte Móvil', description: 'Soporte plao Color', price: 15000),
     Product(id: '9', imageUrls: ['https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/samsung%2025w.jpg?alt=media&token=6aeca5f8-feb1-48de-b6ee-e0c76cd786a1',
-      'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/samsung%2025w2.jpg?alt=media&token=c74eda5f-32f9-4e75-9acd-3ac89951ef1e',
-      'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/samsung%2025w3.jpg?alt=media&token=2f19eba1-1d25-4d28-bdc0-30859920653b'], name: 'Adaptador', description: 'Memoria Usb', price: 5000),
+      'https://i.imgur.com/pJ31feH.jpg',
+      'https://i.imgur.com/c5QE6kL.jpg'], name: 'Adaptador', description: 'Memoria Usb', price: 5000),
   ];
 
   // Variables para manejar la calificación de productos
