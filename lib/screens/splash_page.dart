@@ -1,7 +1,6 @@
 import 'package:ecommerce_int2/app_properties.dart';
 import 'package:flutter/material.dart';
-
-import '../firestore_service.dart';
+import '../firestore_service.dart'; // Importar el servicio correctamente
 import 'intro_page.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -13,6 +12,9 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late Animation<double> opacity;
   late AnimationController controller;
+
+  // Crea una instancia de FirestoreService
+  final FirestoreService _firestoreService = FirestoreService();
 
   @override
   void initState() {
@@ -29,10 +31,8 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _initializeApp() async {
-    // Inicializar productos en Firestore
-    await initializeProducts();
+    await _firestoreService.initializeProducts(); // Llama a la función desde la instancia
 
-    // Navegar a la pantalla principal después de la inicialización
     navigationPage();
   }
 

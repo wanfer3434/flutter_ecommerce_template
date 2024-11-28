@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ecommerce_int2/models/product.dart';
 import 'package:ecommerce_int2/screens/notifications_page.dart';
 import 'package:ecommerce_int2/screens/profile_page.dart';
 import 'package:ecommerce_int2/screens/shop/check_out_page.dart';
 import '../../custom_background.dart';
+import '../../models/local_product_list.dart';
 import '../category/category_list_page.dart';
 import 'components/AnotherPage.dart';
 import 'components/banner_widget.dart'; // Importa el widget del banner
@@ -16,7 +16,7 @@ import 'components/tab_view.dart';
 List<String> timelines = [
   'Destacado Semana',
   'Mejor de Octubre Helloween',
-  'Mejor de 2024'
+  'Mejor de 2024',
 ];
 String selectedTimeline = 'Presentado Semanalmente';
 
@@ -33,17 +33,20 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   List<Product> products = [];
   List<Product> searchResults = [];
 
+
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: 5, vsync: this);
     bottomTabController = TabController(length: 4, vsync: this);
+    products = LocalProductService().getProducts(); // Llama al método// Cargar productos desde el repositorio
   }
 
   @override
   void dispose() {
     tabController.dispose();
     bottomTabController.dispose();
+    searchController.dispose();
     super.dispose();
   }
 
@@ -75,22 +78,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   Widget _buildProductList() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('products').snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Center(child: Text('No se encontraron productos.'));
-        }
+    if (isSearching) {
+      _filterSearchResults(searchController.text);
+    }
 
-        products = snapshot.data!.docs.map((doc) => Product.fromFirestore(doc)).toList();
-
-        return isSearching
-            ? ProductList(products: searchResults)
-            : ProductList(products: products);
-      },
+    return ProductList(
+      products: isSearching ? searchResults : products,
     );
   }
 
@@ -109,8 +102,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             child: Text(
               timelines[0],
               style: TextStyle(
-                  fontSize: timelines[0] == selectedTimeline ? 20 : 14,
-                  color: Colors.grey),
+                fontSize: timelines[0] == selectedTimeline ? 20 : 14,
+                color: Colors.grey,
+              ),
             ),
           ),
         ),
@@ -122,11 +116,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               });
             },
             child: Text(
-                timelines[1],
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: timelines[1] == selectedTimeline ? 20 : 14,
-                    color: Colors.grey)),
+              timelines[1],
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: timelines[1] == selectedTimeline ? 20 : 14,
+                color: Colors.grey,
+              ),
+            ),
           ),
         ),
         Flexible(
@@ -137,11 +133,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               });
             },
             child: Text(
-                timelines[2],
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                    fontSize: timelines[2] == selectedTimeline ? 20 : 14,
-                    color: Colors.grey)),
+              timelines[2],
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                fontSize: timelines[2] == selectedTimeline ? 20 : 14,
+                color: Colors.grey,
+              ),
+            ),
           ),
         ),
       ],

@@ -9,7 +9,6 @@ class CategoryCard extends StatelessWidget {
   final Color end;
   final String categoryName;
   final String imageUrl; // Nombre de la imagen
-  final String description; // Nueva propiedad
   final double rating; // Nueva propiedad
   final String whatsappUrl; // Nueva propiedad
   final Animation<double> controller;
@@ -21,7 +20,6 @@ class CategoryCard extends StatelessWidget {
     required this.end,
     required this.categoryName,
     required this.imageUrl,
-    required this.description,
     required this.rating,
     required this.whatsappUrl,
     required Category category,
@@ -67,47 +65,44 @@ class CategoryCard extends StatelessWidget {
                 height: imageHeight, // Usar el nuevo parámetro de altura
                 fit: BoxFit.cover, // Ajuste para que la imagen cubra el espacio
               ),
-              SizedBox(height: 8.0), // Espacio entre la imagen y el texto
-              Text(
-                categoryName,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(height: 4.0), // Espacio entre el nombre y la descripción
-              Text(
-                description,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.white70,
-                ),
-              ),
-              SizedBox(height: 8.0), // Espacio entre la descripción y el rating
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween, // Alinear los elementos a los extremos
                 children: [
-                  Icon(Icons.star, color: Colors.yellow),
-                  SizedBox(width: 4.0), // Espacio entre estrella y rating
-                  Text(
-                    '$rating',
-                    style: TextStyle(
-                      color: Colors.white,
+                  Expanded(
+                    child: Text(
+                      categoryName,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.left,
                     ),
                   ),
-                  Spacer(),
-                  IconButton(
-                    icon: FaIcon(FontAwesomeIcons.whatsapp, color: Colors.green),
-                    onPressed: () async {
-                      final Uri whatsappUri = Uri.parse(whatsappUrl);
-                      if (await canLaunchUrl(whatsappUri)) {
-                        await launchUrl(whatsappUri);
-                      } else {
-                        throw 'No se puede abrir $whatsappUrl';
-                      }
-                    },
+                  Row(
+                    children: [
+                      Icon(Icons.star, color: Colors.yellow),
+                      SizedBox(width: 4.0), // Espacio entre estrella y rating
+                      Text(
+                        '$rating',
+                        style: TextStyle(
+                          color: Colors.black, // Color del texto del rating
+                        ),
+                      ),
+                    ],
                   ),
                 ],
+              ),
+              IconButton(
+                icon: FaIcon(FontAwesomeIcons.whatsapp, color: Colors.green),
+                onPressed: () async {
+                  final Uri whatsappUri = Uri.parse(whatsappUrl);
+                  if (await canLaunchUrl(whatsappUri)) {
+                    await launchUrl(whatsappUri);
+                  } else {
+                    throw 'No se puede abrir $whatsappUrl';
+                  }
+                },
               ),
             ],
           ),

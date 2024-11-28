@@ -19,7 +19,7 @@ class CategoryProvider with ChangeNotifier {
       end: Color(0xffFF7375),
       name: 'Iphone',
       imageUrls: ['https://i.imgur.com/ei0dabO.jpg'],
-      description: '11,12/12 pro,12 pro max,13,14,13promax,14pro,14promax,15', // Descripción
+      description: '11,12/12 pro,12 pro max,13,14,13promax,14pro', // Descripción
       averageRating: 4.5, // Calificación,
       whatsappUrl: 'https://wa.me/1234567890', // WhatsApp URL
     ),
@@ -29,7 +29,7 @@ class CategoryProvider with ChangeNotifier {
       end: Color(0xff5189EA),
       name: 'Pines-Diseño-Protección trasera',
       imageUrls: ['https://i.imgur.com/NLzlWUv.jpg'],
-      description: 'camon20, tecno10c,tecno9pro,note8,note9,note11,note12,note12s,note13pro,note13proplus,A24,A34,S20fe,S21fe,G24,G34,G54 ',
+      description: 'camon20,note13pro,note13proplus,A24 ',
       averageRating: 4.5, // Calificación,
       whatsappUrl: 'https://wa.me/1234567890', // WhatsApp URL
     ),
@@ -39,7 +39,7 @@ class CategoryProvider with ChangeNotifier {
       end:  Color(0xff632376),
       name: 'Silicona de Colores',
       imageUrls: ['https://i.imgur.com/b8ESxdU.jpg'],
-      description: 'Note11,A05,A05S,A15,A35,A55,HOT40,HOT40PRO,Magig5lite,Magic6lite,Redmi13c,Y9Prime',
+      description: 'Note11,A05,A05S,A15,A35,A55,HOT40,,Y9Prime',
       averageRating: 4.5, // Calificación,
       whatsappUrl: 'https://wa.me/1234567890',
     ),

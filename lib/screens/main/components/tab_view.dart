@@ -35,11 +35,11 @@ class TabView extends StatelessWidget {
 
                   // Define la altura del contenedor
                   double containerHeight = isDesktop
-                      ? MediaQuery.of(context).size.height * 0.68  // Altura para escritorio
-                      : MediaQuery.of(context).size.height * 0.30; // Altura para móvil
+                      ? MediaQuery.of(context).size.height * 0.80  // Altura para escritorio
+                      : MediaQuery.of(context).size.height * 0.45; // Altura para móvil
 
                   // Ajusta la altura de la imagen
-                  double imageHeight = isDesktop ? 290.0 : containerHeight * 1.90; // Aumenta el tamaño de la imagen
+                  double imageHeight = isDesktop ? 250.0 : containerHeight * 0.80; // Aumenta el tamaño de la imagen
 
                   return Container(
                     width: constraints.maxWidth,
@@ -51,7 +51,7 @@ class TabView extends StatelessWidget {
                         final category = categories[index];
 
                         return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
                           child: CategoryCard(
                             controller: AnimationController(
                               vsync: Scaffold.of(context),
@@ -62,7 +62,6 @@ class TabView extends StatelessWidget {
                             categoryName: category.name ?? 'Unnamed Category',
                             imageUrl: category.imageUrls.isNotEmpty ? category.imageUrls[0] : '',
                             category: category,
-                            description: category.description ?? '',
                             rating: category.averageRating ?? 0.0,
                             whatsappUrl: category.whatsappUrl ?? '',
                             imageHeight: imageHeight,  // Usar la altura ajustada

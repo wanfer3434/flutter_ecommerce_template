@@ -74,7 +74,6 @@ class _StaggeredCardCardState extends State<StaggeredCardCard>
         end: widget.end,
         imageUrl: widget.imageUrl, // Cambiado aquí
         category: widget.category, // Asegúrate de pasar el parámetro 'category'
-        description: widget.description,
         rating: widget.rating,
         whatsappUrl: widget.whatsappUrl,
       ),

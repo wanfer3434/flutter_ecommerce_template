@@ -27,8 +27,8 @@ class Product {
       name: data['name'] ?? '',  // Valor por defecto si 'name' es null
       description: data['description'] ?? '',
       imageUrls: List<String>.from(data['imageUrls'] ?? []),  // Manejar lista vacía si no hay 'imageUrls'
-      price: (data['price'] is int) ? (data['price'] as int).toDouble() : (data['price'] ?? 0.0),
-      averageRating: (data['averageRating'] ?? 0.0).toDouble(),  // Asegurar conversión a double
+      price: (data['price'] is int) ? (data['price'] as int).toDouble() : (data['price']?.toDouble() ?? 0.0),
+      averageRating: (data['averageRating']?.toDouble() ?? 0.0),  // Asegurar conversión a double
       ratingCount: data['ratingCount'] ?? 0,  // Valor por defecto si no hay 'ratingCount'
     );
   }

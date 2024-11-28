@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:ecommerce_int2/models/product.dart';
 import 'package:ecommerce_int2/screens/product/product_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductCard extends StatefulWidget {
   final Product product;
@@ -20,72 +19,33 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-  double _currentRating = 0; // Para manejar la calificación actual
+  double _currentRating = 0; // Calificación actual seleccionada por el usuario
   int _currentImageIndex = 0; // Índice para manejar la imagen actual
-  double _averageRating = 0.0; // Inicializa el promedio de calificación
-  int _ratingCount = 0; // Inicializa el conteo de calificaciones
+  double _averageRating = 4.5; // Simulación de promedio de calificación inicial
+  int _ratingCount = 20; // Simulación del número de opiniones
 
-  @override
-  void initState() {
-    super.initState();
-    _loadProductRating(); // Cargar la calificación promedio al iniciar
-  }
-
-  // Función para cambiar la imagen cuando se presiona
+  // Cambiar la imagen cuando se presiona
   void _changeImage() {
     setState(() {
       _currentImageIndex = (_currentImageIndex + 1) % widget.product.imageUrls.length;
     });
   }
 
-  // Función para cargar la calificación promedio desde Firestore
-  void _loadProductRating() async {
-    DocumentSnapshot productSnapshot = await FirebaseFirestore.instance
-        .collection('products')
-        .doc(widget.product.id) // Usar el id del producto
-        .get();
-
-    if (productSnapshot.exists) {
-      Map<String, dynamic> data = productSnapshot.data() as Map<String, dynamic>;
-      setState(() {
-        _averageRating = data['averageRating'] ?? 0.0;
-        _ratingCount = data['ratingCount'] ?? 0;
-      });
-    }
-  }
-
-  // Función para guardar la nueva calificación en Firestore
-  void _saveRating(double rating) async {
-    final productRef = FirebaseFirestore.instance.collection('products').doc(widget.product.id);
-
-    await FirebaseFirestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot snapshot = await transaction.get(productRef);
-
-      if (snapshot.exists) {
-        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-        double currentTotalRating = (data['averageRating'] ?? 0.0) * (data['ratingCount'] ?? 0);
-        int newRatingCount = (data['ratingCount'] ?? 0) + 1;
-        double newAverageRating = (currentTotalRating + rating) / newRatingCount;
-
-        transaction.update(productRef, {
-          'averageRating': newAverageRating,
-          'ratingCount': newRatingCount,
-        });
-
-        setState(() {
-          _averageRating = newAverageRating;
-          _ratingCount = newRatingCount;
-        });
-      }
+  // Función para simular el guardado de una calificación localmente
+  void _saveRating(double rating) {
+    setState(() {
+      double currentTotalRating = _averageRating * _ratingCount;
+      _ratingCount += 1;
+      _averageRating = (currentTotalRating + rating) / _ratingCount;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      /*onTap: () => Navigator.of(context).push(
+      onTap: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => ProductPage(product: widget.product)),
-      ),*/
+      ),
       child: Container(
         height: widget.height,
         width: widget.width - 28,
@@ -96,21 +56,21 @@ class _ProductCardState extends State<ProductCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            // Imagen del producto con cambio de imagen al tocar
+            // Imagen del producto con cambio al tocar
             GestureDetector(
-              onTap: _changeImage, // Cambia la imagen al tocar
+              onTap: _changeImage,
               child: Align(
                 alignment: Alignment.topCenter,
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     return Container(
                       padding: EdgeInsets.all(16.0),
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      height: MediaQuery.of(context).size.height * 0.25, // Ajuste dinámico
+                      width: MediaQuery.of(context).size.width * 1.5,
+                      height: MediaQuery.of(context).size.height * 0.30,
                       child: Image.network(
                         widget.product.imageUrls[_currentImageIndex], // Mostrar la imagen actual
                         fit: BoxFit.cover,
-                        height: constraints.maxWidth < 600 ? 190 : 300, // Ajuste basado en constraints
+                        height: constraints.maxWidth < 600 ? 190 : 300,
                       ),
                     );
                   },
@@ -132,7 +92,6 @@ class _ProductCardState extends State<ProductCard> {
                   // Nombre del producto
                   Text(
                     widget.product.name,
-                    textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 14.0,
                       color: Colors.black,
@@ -143,7 +102,6 @@ class _ProductCardState extends State<ProductCard> {
                   // Descripción del producto
                   Text(
                     widget.product.description,
-                    textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 12.0,
                       color: Colors.black,
@@ -153,21 +111,20 @@ class _ProductCardState extends State<ProductCard> {
                   // Precio del producto
                   Text(
                     '\$${widget.product.price.toStringAsFixed(2)}',
-                    textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 12.0,
                       color: Colors.black87,
                     ),
                   ),
                   SizedBox(height: 4.0),
-                  // Widget de calificación con estrellas
+                  // Calificación con estrellas
                   RatingBar.builder(
                     initialRating: _currentRating,
                     minRating: 1,
                     direction: Axis.horizontal,
                     allowHalfRating: true,
                     itemCount: 5,
-                    itemSize: 20.0, // Aumenta el tamaño de las estrellas
+                    itemSize: 20.0, // Tamaño de las estrellas
                     itemBuilder: (context, _) => Icon(
                       Icons.star,
                       color: Colors.amber,
@@ -176,13 +133,13 @@ class _ProductCardState extends State<ProductCard> {
                       setState(() {
                         _currentRating = rating;
                       });
-                      _saveRating(rating); // Guarda la calificación
+                      _saveRating(rating); // Simular guardar la calificación
                     },
                   ),
                   SizedBox(height: 3.0),
-                  // Promedio de calificación
+                  // Mostrar promedio de calificación
                   Text(
-                    'Promedio: $_averageRating (${_ratingCount} opiniones)',
+                    'Promedio: ${_averageRating.toStringAsFixed(1)} ($_ratingCount opiniones)',
                     style: TextStyle(
                       fontSize: 12.0,
                       color: Colors.black26,

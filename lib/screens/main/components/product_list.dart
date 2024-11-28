@@ -12,8 +12,8 @@ class ProductList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double cardHeight = MediaQuery.of(context).size.height / 2.7;
-    double cardWidth = MediaQuery.of(context).size.width / 1.8;
+    double cardHeight = MediaQuery.of(context).size.height / 1.98;
+    double cardWidth = MediaQuery.of(context).size.width / 2.5;
 
     return SizedBox(
       height: cardHeight,
@@ -37,6 +37,7 @@ class ProductList extends StatelessWidget {
               print(
                   "The itemCount is too big, we suggest using FractionPaginationBuilder instead of DotSwiperPaginationBuilder in this situation");
             }
+
             Color activeColor = mediumYellow;
             Color color = Colors.grey.withOpacity(.3);
             double size = 10.0;
@@ -83,9 +84,7 @@ class ProductList extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: dots.map((dot) {
-                    return Expanded(child: dot);
-                  }).toList(),
+                  children: dots.map((dot) => Expanded(child: dot)).toList(),
                 ),
               ),
             );
@@ -95,4 +94,3 @@ class ProductList extends StatelessWidget {
     );
   }
 }
-
