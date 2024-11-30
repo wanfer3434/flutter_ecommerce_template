@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+import os
 
 app = Flask(__name__)
 
@@ -77,4 +78,5 @@ def chat():
 
 if __name__ == '__main__':
     db.create_all()  # Crea las tablas en la base de datos
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))  # Railway asignará un puerto automáticamente
+    app.run(host='0.0.0.0', port=port)
