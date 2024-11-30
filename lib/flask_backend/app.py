@@ -1,8 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='build/web')  # Especifica la carpeta de archivos estáticos
 
 # Configuración de la base de datos SQLite
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat.db'
@@ -75,6 +75,11 @@ def chat():
     db.session.commit()
 
     return jsonify({"response": response})
+
+# Ruta para servir la aplicación Flutter Web
+@app.route('/')
+def serve_index():
+    return send_from_directory(os.path.join(app.static_folder, 'index.html'))
 
 if __name__ == '__main__':
     db.create_all()  # Crea las tablas en la base de datos
