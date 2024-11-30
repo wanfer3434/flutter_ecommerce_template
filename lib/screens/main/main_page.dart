@@ -12,6 +12,8 @@ import 'components/banner_widget.dart'; // Importa el widget del banner
 import 'components/custom_bottom_bar.dart';
 import 'components/product_list.dart';
 import 'components/tab_view.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';  // Paquete de Chatbot
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 List<String> timelines = [
   'Destacado Semana',
@@ -28,63 +30,63 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   late TabController tabController;
   late TabController bottomTabController;
-  TextEditingController searchController = TextEditingController();
-  bool isSearching = false;
   List<Product> products = [];
   List<Product> searchResults = [];
 
+  // Chatbot variables
+  List<types.Message> _messages = [];
+  late types.User _user;
 
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: 5, vsync: this);
     bottomTabController = TabController(length: 4, vsync: this);
-    products = LocalProductService().getProducts(); // Llama al método// Cargar productos desde el repositorio
+    products = LocalProductService().getProducts(); // Cargar productos desde el repositorio
+
+    // Inicializa el usuario para el chatbot
+    _user = types.User(id: 'user_1');
   }
 
   @override
   void dispose() {
     tabController.dispose();
     bottomTabController.dispose();
-    searchController.dispose();
     super.dispose();
   }
 
-  void _filterSearchResults(String query) {
-    List<Product> tempList = [];
-    if (query.isNotEmpty) {
-      products.forEach((product) {
-        if (product.name.toLowerCase().contains(query.toLowerCase())) {
-          tempList.add(product);
-        }
-      });
-    } else {
-      tempList.addAll(products);
-    }
-    setState(() {
-      searchResults.clear();
-      searchResults.addAll(tempList);
-    });
-  }
-
-  void _toggleSearch() {
-    setState(() {
-      isSearching = !isSearching;
-      if (!isSearching) {
-        searchController.clear();
-        _filterSearchResults('');
-      }
-    });
-  }
-
   Widget _buildProductList() {
-    if (isSearching) {
-      _filterSearchResults(searchController.text);
-    }
-
     return ProductList(
-      products: isSearching ? searchResults : products,
+      products: products,
     );
+  }
+
+  // Función para responder al mensaje
+  void _sendMessage(types.PartialText text) {
+    final message = types.TextMessage(
+      author: _user,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      text: text.text,  // Extrae el texto de PartialText
+    );
+
+    setState(() {
+      _messages.insert(0, message);
+    });
+
+    // Simulación de respuesta del chatbot
+    Future.delayed(Duration(seconds: 1), () {
+      final responseMessage = types.TextMessage(
+        author: types.User(id: 'bot_1'),
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        text: '¡Hola! ¿Cómo puedo ayudarte?',
+      );
+
+      setState(() {
+        _messages.insert(0, responseMessage);
+      });
+    });
   }
 
   @override
@@ -163,18 +165,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
     return Scaffold(
       appBar: AppBar(
-        title: !isSearching
-            ? Text('Tu Tienda')
-            : TextField(
-          controller: searchController,
-          style: TextStyle(color: Colors.black),
-          decoration: InputDecoration(
-            hintText: 'Buscar...',
-            hintStyle: TextStyle(color: Colors.black),
-            border: InputBorder.none,
-          ),
-          onChanged: _filterSearchResults,
-        ),
+        title: Text('Tu Tienda'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.notifications),
@@ -184,14 +175,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               );
             },
           ),
-          IconButton(
-            icon: SvgPicture.asset(
-              'assets/icons/search_icon.svg',
-              height: 24,
-              width: 24,
-            ),
-            onPressed: _toggleSearch,
-          ),
         ],
       ),
       bottomNavigationBar: CustomBottomBar(controller: bottomTabController),
@@ -199,16 +182,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         painter: MainBackground(),
         child: TabBarView(
           controller: bottomTabController,
-          physics: NeverScrollableScrollPhysics(), // Mantén esto si no quieres swipe en tabs.
+          physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
             SafeArea(
               child: NestedScrollView(
                 headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     SliverAppBar(
-                      expandedHeight: 250, // Ajusta la altura del banner
+                      expandedHeight: 250,
                       pinned: true,
-                      primary: false, // Permite superposición con la barra de estado
+                      primary: false,
                       flexibleSpace: FlexibleSpaceBar(
                         background: BannerWidget(
                           imageUrl: 'https://i.imgur.com/GaEsmRG.png',
@@ -225,12 +208,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     ),
                     SliverToBoxAdapter(child: topHeader),
                     SliverToBoxAdapter(
-                      child: SingleChildScrollView( // Envuelve en scroll si es necesario.
+                      child: SingleChildScrollView(
                         child: Column(
                           children: [
-                            _buildProductList(), // Lista de productos.
-                            SizedBox(height: 16), // Espacio entre elementos.
-                            tabBar, // TabBar adicional.
+                            _buildProductList(),
+                            SizedBox(height: 16),
+                            tabBar,
                           ],
                         ),
                       ),
@@ -245,6 +228,28 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             ProfilePage(),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Chatbot"),
+                content: Container(
+                  width: double.maxFinite,
+                  height: 300,
+                  child: Chat(
+                    messages: _messages,
+                    onSendPressed: _sendMessage,  // Cambiado para aceptar PartialText
+                    user: _user,
+                  ),
+                ),
+              );
+            },
+          );
+        },
+        child: Icon(Icons.chat),
       ),
     );
   }

@@ -5,15 +5,62 @@ app = Flask(__name__)
 @app.route('/chat', methods=['POST'])
 def chat():
     data = request.json
-    user_message = data.get('message', '')
+    user_message = data.get('message', '').lower()  # Convertir a minúsculas
 
-    # Lógica básica de respuesta
-    if "hola" in user_message.lower():
-        response = "¡Hola! ¿En qué puedo ayudarte?"
-    elif "precio" in user_message.lower():
-        response = "Los precios varían según el producto. ¿Qué estás buscando?"
+    # Lógica específica para accesorios móviles
+    if "hola" in user_message:
+        response = ("¡Hola! Bienvenido a nuestra tienda de accesorios móviles. ¿En qué puedo ayudarte hoy?\n"
+                    "Puedes preguntar por:\n"
+                    "- Forros para móviles\n"
+                    "- Vidrios templados\n"
+                    "- Auriculares\n"
+                    "- Cargadores")
+
+    elif "precio" in user_message:
+        response = ("Los precios varían según el producto. Tenemos:\n"
+                    "- Forros desde $10\n"
+                    "- Vidrios templados desde $5\n"
+                    "- Auriculares desde $20\n"
+                    "- Cargadores desde $15\n"
+                    "¿Sobre qué producto te gustaría más detalles?")
+
+    elif "forros" in user_message:
+        response = ("Tenemos varias opciones de forros para móviles. Elige uno de estos tipos:\n"
+                    "- Forros básicos\n"
+                    "- Forros antigolpes\n"
+                    "- Forros personalizados\n"
+                    "¿Para qué modelo de teléfono estás buscando el forro?")
+
+    elif "vidrios" in user_message or "protector de pantalla" in user_message:
+        response = ("Tenemos vidrios templados de alta calidad. Elige entre estos tipos:\n"
+                    "- Vidrios templados estándar\n"
+                    "- Vidrios anti-rayaduras\n"
+                    "- Vidrios con borde 3D\n"
+                    "¿Para qué modelo de teléfono necesitas el protector de pantalla?")
+
+    elif "auriculares" in user_message:
+        response = ("Contamos con diferentes tipos de auriculares. Elige uno:\n"
+                    "- Auriculares inalámbricos\n"
+                    "- Auriculares con cable\n"
+                    "- Auriculares Bluetooth\n"
+                    "¿Qué tipo prefieres?")
+
+    elif "cargadores" in user_message:
+        response = ("Tenemos varias opciones de cargadores. Elige uno:\n"
+                    "- Cargadores rápidos\n"
+                    "- Cargadores inalámbricos\n"
+                    "- Cargadores universales\n"
+                    "¿Qué tipo de cargador te interesa más?")
+
+    elif "gracias" in user_message:
+        response = "¡Gracias a ti! Si necesitas más ayuda, estaré encantado de asistirte."
+
     else:
-        response = "Lo siento, no entendí tu mensaje. ¿Podrías ser más específico?"
+        response = ("Lo siento, no entendí tu mensaje. ¿Puedes elegir una de estas opciones?\n"
+                    "- Forros para móviles\n"
+                    "- Vidrios templados\n"
+                    "- Auriculares\n"
+                    "- Cargadores")
 
     return jsonify({"response": response})
 
