@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class FlaskService {
-  static const String _baseUrl = 'http://127.0.0.1:5000/responder';
+  // Cambia esta URL por la de tu aplicación desplegada en Render
+  static const String _baseUrl = 'https://flutter-ecommerce-template-1.onrender.com/responder';
 
   static Future<String> sendMessage(String message) async {
     try {
