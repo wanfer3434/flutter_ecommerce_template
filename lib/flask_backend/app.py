@@ -2,7 +2,8 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-app = Flask(__name__, static_folder='build/web')  # Especifica la carpeta de archivos estáticos
+# Configura Flask para servir archivos estáticos desde 'build/web'
+app = Flask(__name__, static_folder='build/web')
 
 # Configuración de la base de datos SQLite
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat.db'
@@ -15,7 +16,7 @@ class ChatMessage(db.Model):
     user_message = db.Column(db.String(200), nullable=False)
     bot_response = db.Column(db.String(200), nullable=False)
 
-# Ruta para manejar los mensajes
+# Ruta para manejar los mensajes del chat
 @app.route('/chat', methods=['POST'])
 def chat():
     data = request.json
@@ -36,38 +37,8 @@ def chat():
                     "- Auriculares desde $20\n"
                     "- Cargadores desde $15\n"
                     "¿Sobre qué producto te gustaría más detalles?")
-    elif "forros" in user_message:
-        response = ("Tenemos varias opciones de forros para móviles. Elige uno de estos tipos:\n"
-                    "- Forros básicos\n"
-                    "- Forros antigolpes\n"
-                    "- Forros personalizados\n"
-                    "¿Para qué modelo de teléfono estás buscando el forro?")
-    elif "vidrios" in user_message or "protector de pantalla" in user_message:
-        response = ("Tenemos vidrios templados de alta calidad. Elige entre estos tipos:\n"
-                    "- Vidrios templados estándar\n"
-                    "- Vidrios anti-rayaduras\n"
-                    "- Vidrios con borde 3D\n"
-                    "¿Para qué modelo de teléfono necesitas el protector de pantalla?")
-    elif "auriculares" in user_message:
-        response = ("Contamos con diferentes tipos de auriculares. Elige uno:\n"
-                    "- Auriculares inalámbricos\n"
-                    "- Auriculares con cable\n"
-                    "- Auriculares Bluetooth\n"
-                    "¿Qué tipo prefieres?")
-    elif "cargadores" in user_message:
-        response = ("Tenemos varias opciones de cargadores. Elige uno:\n"
-                    "- Cargadores rápidos\n"
-                    "- Cargadores inalámbricos\n"
-                    "- Cargadores universales\n"
-                    "¿Qué tipo de cargador te interesa más?")
-    elif "gracias" in user_message:
-        response = "¡Gracias a ti! Si necesitas más ayuda, estaré encantado de asistirte."
     else:
-        response = ("Lo siento, no entendí tu mensaje. ¿Puedes elegir una de estas opciones?\n"
-                    "- Forros para móviles\n"
-                    "- Vidrios templados\n"
-                    "- Auriculares\n"
-                    "- Cargadores")
+        response = "Lo siento, no entendí tu mensaje. ¿Puedes elegir una de estas opciones?"
 
     # Guardar el mensaje y la respuesta en la base de datos
     new_message = ChatMessage(user_message=user_message, bot_response=response)
@@ -76,12 +47,20 @@ def chat():
 
     return jsonify({"response": response})
 
-# Ruta para servir la aplicación Flutter Web
+# Ruta para servir el archivo 'index.html'
 @app.route('/')
 def serve_index():
-    return send_from_directory(os.path.join(app.static_folder, 'index.html'))
+    return send_from_directory(app.static_folder, 'index.html')
+
+# Ruta catch-all para manejar cualquier otra solicitud desconocida
+@app.errorhandler(404)
+def serve_not_found(e):
+    return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == '__main__':
-    db.create_all()  # Crea las tablas en la base de datos
-    port = int(os.environ.get('PORT', 5000))  # Railway asignará un puerto automáticamente
+    # Crea las tablas en la base de datos
+    with app.app_context():
+        db.create_all()
+
+    port = int(os.environ.get('PORT', 5000))  # Render asignará un puerto automáticamente
     app.run(host='0.0.0.0', port=port)
