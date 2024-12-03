@@ -1,6 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'flask_service.dart'; // Importa el servicio Flask
 
 class ChatPage extends StatefulWidget {
   @override
@@ -12,40 +11,21 @@ class _ChatPageState extends State<ChatPage> {
   List<Map<String, String>> messages = [];
 
   Future<void> sendMessage(String userMessage) async {
-    // Agrega el mensaje del usuario a la lista
     setState(() {
       messages.add({"sender": "user", "text": userMessage});
     });
 
-    // Enviar mensaje al servidor
-    final response = await http.post(
-      Uri.parse('http://127.0.0.1:5000/chat'), // Cambia la URL si el backend está en producción
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({"message": userMessage}),
-    );
+    final botResponse = await FlaskService.sendMessage(userMessage);
 
-    if (response.statusCode == 200) {
-      final responseBody = jsonDecode(response.body);
-      String botMessage = responseBody['response'];
-
-      // Agregar la respuesta del bot a la lista
-      setState(() {
-        messages.add({"sender": "bot", "text": botMessage});
-      });
-    } else {
-      setState(() {
-        messages.add({
-          "sender": "bot",
-          "text": "Hubo un problema al conectar con el servidor. Inténtalo nuevamente."
-        });
-      });
-    }
+    setState(() {
+      messages.add({"sender": "bot", "text": botResponse});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("ChatBot")),
+      appBar: AppBar(title: Text("ChatBot con Flask")),
       body: Column(
         children: [
           Expanded(
@@ -53,20 +33,26 @@ class _ChatPageState extends State<ChatPage> {
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
+                final isUserMessage = message['sender'] == 'user';
+                final isImageUrl = Uri.tryParse(message['text'] ?? '')?.hasAbsolutePath ?? false;
+
                 return Align(
-                  alignment: message['sender'] == 'user'
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
+                  alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
                     margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: message['sender'] == 'user'
-                          ? Colors.blue[100]
-                          : Colors.grey[300],
+                      color: isUserMessage ? Colors.blue[100] : Colors.grey[300],
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Text(message['text'] ?? ""),
+                    child: isImageUrl
+                        ? Image.network(
+                      message['text']!,
+                      width: 150,
+                      height: 150,
+                      fit: BoxFit.cover,
+                    )
+                        : Text(message['text'] ?? ""),
                   ),
                 );
               },
