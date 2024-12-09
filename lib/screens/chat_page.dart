@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'flask_service.dart'; // Importa el servicio Flask
+import '../flask_service.dart';
+
 
 class ChatPage extends StatefulWidget {
   @override
@@ -34,15 +35,20 @@ class _ChatPageState extends State<ChatPage> {
               itemBuilder: (context, index) {
                 final message = messages[index];
                 final isUserMessage = message['sender'] == 'user';
-                final isImageUrl = Uri.tryParse(message['text'] ?? '')?.hasAbsolutePath ?? false;
+                final isImageUrl =
+                    Uri.tryParse(message['text'] ?? '')?.hasAbsolutePath ?? false;
 
                 return Align(
-                  alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
+                  alignment: isUserMessage
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
                   child: Container(
                     margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: isUserMessage ? Colors.blue[100] : Colors.grey[300],
+                      color: isUserMessage
+                          ? Colors.blue[100]
+                          : Colors.grey[300],
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: isImageUrl

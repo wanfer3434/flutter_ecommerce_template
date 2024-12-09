@@ -7,13 +7,12 @@ import 'package:ecommerce_int2/screens/shop/check_out_page.dart';
 import '../../custom_background.dart';
 import '../../models/local_product_list.dart';
 import '../category/category_list_page.dart';
+import '../chat_page.dart';
 import 'components/AnotherPage.dart';
 import 'components/banner_widget.dart'; // Importa el widget del banner
 import 'components/custom_bottom_bar.dart';
 import 'components/product_list.dart';
 import 'components/tab_view.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';  // Paquete de Chatbot
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 List<String> timelines = [
   'Destacado Semana',
@@ -33,19 +32,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   List<Product> products = [];
   List<Product> searchResults = [];
 
-  // Chatbot variables
-  List<types.Message> _messages = [];
-  late types.User _user;
-
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: 5, vsync: this);
     bottomTabController = TabController(length: 4, vsync: this);
     products = LocalProductService().getProducts(); // Cargar productos desde el repositorio
-
-    // Inicializa el usuario para el chatbot
-    _user = types.User(id: 'user_1');
   }
 
   @override
@@ -59,34 +51,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     return ProductList(
       products: products,
     );
-  }
-
-  // Función para responder al mensaje
-  void _sendMessage(types.PartialText text) {
-    final message = types.TextMessage(
-      author: _user,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      text: text.text,  // Extrae el texto de PartialText
-    );
-
-    setState(() {
-      _messages.insert(0, message);
-    });
-
-    // Simulación de respuesta del chatbot
-    Future.delayed(Duration(seconds: 1), () {
-      final responseMessage = types.TextMessage(
-        author: types.User(id: 'bot_1'),
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        text: '¡Hola! ¿Cómo puedo ayudarte?',
-      );
-
-      setState(() {
-        _messages.insert(0, responseMessage);
-      });
-    });
   }
 
   @override
@@ -231,22 +195,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Chatbot"),
-                content: Container(
-                  width: double.maxFinite,
-                  height: 300,
-                  child: Chat(
-                    messages: _messages,
-                    onSendPressed: _sendMessage,  // Cambiado para aceptar PartialText
-                    user: _user,
-                  ),
-                ),
-              );
-            },
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChatPage()),
           );
         },
         child: Icon(Icons.chat),
