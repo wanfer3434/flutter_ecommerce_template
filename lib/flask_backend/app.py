@@ -2,8 +2,11 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-# Configura Flask para servir archivos estáticos desde 'build/web'
-app = Flask(__name__, static_folder='build/web')
+# Ruta de la carpeta generada por Flutter
+BUILD_FOLDER = os.path.join(os.getcwd(), 'build', 'web')
+
+# Configurar Flask para apuntar a la carpeta de Flutter build
+app = Flask(__name__, static_folder=BUILD_FOLDER)
 
 # Configuración de la base de datos SQLite
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat.db'
@@ -47,20 +50,45 @@ def chat():
 
     return jsonify({"response": response})
 
-# Ruta para servir el archivo 'index.html'
+
+@app.route('/favicon.ico')
+def favicon():
+    # Ruta para intentar servir el favicon si existe
+    favicon_path = os.path.join(BUILD_FOLDER, 'favicon.png')
+    if os.path.exists(favicon_path):
+        return send_from_directory(BUILD_FOLDER, 'favicon.png')
+    return '', 204
+
+
+# Ruta principal para servir index.html generado por Flutter
 @app.route('/')
 def serve_index():
-    return send_from_directory(app.static_folder, 'index.html')
+    try:
+        return send_from_directory(BUILD_FOLDER, 'index.html')
+    except FileNotFoundError:
+        return jsonify({"error": "No se pudo encontrar el archivo index.html"}), 500
 
-# Ruta catch-all para manejar cualquier otra solicitud desconocida
+
+# Ruta catch-all para cualquier solicitud (para rutas internas de Flutter)
+@app.route('/<path:path>')
+def serve_static(path):
+    try:
+        return send_from_directory(BUILD_FOLDER, path)
+    except FileNotFoundError:
+        return send_from_directory(BUILD_FOLDER, 'index.html')
+
+
+# Manejador de error 404 para asegurarse de redirigir a index.html
 @app.errorhandler(404)
-def serve_not_found(e):
-    return send_from_directory(app.static_folder, 'index.html')
+def handle_404(e):
+    return send_from_directory(BUILD_FOLDER, 'index.html')
+
 
 if __name__ == '__main__':
-    # Crea las tablas en la base de datos
+    # Crear la base de datos y sus tablas si no existen
     with app.app_context():
         db.create_all()
 
-    port = int(os.environ.get('PORT', 5000))  # Render asignará un puerto automáticamente
-    app.run(host='0.0.0.0', port=port)
+    # Iniciar el servidor Flask
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
