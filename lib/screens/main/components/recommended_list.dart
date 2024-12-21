@@ -20,7 +20,7 @@ class _RecommendedListState extends State<RecommendedList> {
     Product(id: '4', imageUrls: ['https://i.imgur.com/3Lk2fcw.jpg',
       'https://i.imgur.com/k16kyo7.png'], name: 'cadena de colores', description: 'cadena', price: 5000),
     Product(id: '5', imageUrls: ['https://i.imgur.com/t1mUHdd.jpg',
-      'https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/IMG-20240827-WA0038.jpg?alt=media&token=3901ab4b-f309-4f7c-b65c-a04dc91addd6'], name: 'Billete de Colección', description: 'Billete de CINCO PESOS ORO', price: 50000),
+      'https://imgur.com/a/3kpNSB2'], name: 'Billete de Colección', description: 'Billete de CINCO PESOS ORO', price: 50000),
     Product(id: '6', imageUrls: ['https://i.imgur.com/zaMg63b.jpg'], name: 'Lentes Para Camara', description: 'Lisos y de Piedra', price: 5000),
     Product(id: '7', imageUrls: ['https://firebasestorage.googleapis.com/v0/b/flutterecommercetemplate-72969.appspot.com/o/Iphone_Silicone.jpg?alt=media&token=c673ce14-832e-4aa3-b9cb-fece81c28c7b',
       'https://i.imgur.com/ziPFySl.jpg',
