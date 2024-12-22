@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ecommerce_int2/models/product.dart';
@@ -7,13 +8,14 @@ import 'package:ecommerce_int2/screens/shop/check_out_page.dart';
 import '../../custom_background.dart';
 import '../../models/local_product_list.dart';
 import '../category/category_list_page.dart';
-import '../chat_page.dart';
+import '../chat_page.dart'; // Importamos el ChatScreen
 import 'components/AnotherPage.dart';
 import 'components/banner_widget.dart'; // Importa el widget del banner
 import 'components/custom_bottom_bar.dart';
 import 'components/product_list.dart';
-import 'components/tab_view.dart';
+import 'components/tab_view.dart'; // Importa el TabView
 
+// Definir las líneas de tiempo
 List<String> timelines = [
   'Destacado Semana',
   'Mejor de Octubre Helloween',
@@ -28,23 +30,94 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   late TabController tabController;
-  late TabController bottomTabController;
   List<Product> products = [];
-  List<Product> searchResults = [];
+  TextEditingController chatController = TextEditingController();
+  List<Map<String, String>> chatMessages = [];
 
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: 5, vsync: this);
-    bottomTabController = TabController(length: 4, vsync: this);
     products = LocalProductService().getProducts(); // Cargar productos desde el repositorio
   }
 
   @override
   void dispose() {
     tabController.dispose();
-    bottomTabController.dispose();
+    chatController.dispose();
     super.dispose();
+  }
+
+  // Métodos de chat
+  Future<void> sendMessage(String userMessage) async {
+    if (userMessage.isEmpty) return;
+
+    setState(() {
+      chatMessages.add({'user': userMessage, 'bot': 'Cargando...'}); // Muestra "Cargando..." mientras se obtiene la respuesta
+    });
+
+    try {
+      final responseDoc = await FirebaseFirestore.instance
+          .collection('responses')
+          .where('input', isEqualTo: userMessage.toLowerCase())
+          .limit(1)
+          .get();
+
+      String botResponse = responseDoc.docs.isNotEmpty
+          ? responseDoc.docs.first['response']
+          : 'Lo siento, no entiendo tu mensaje. ¿Podrías reformularlo?';
+
+      setState(() {
+        chatMessages.last['bot'] = botResponse; // Actualiza la respuesta del bot
+      });
+    } catch (e) {
+      setState(() {
+        chatMessages.last['bot'] = 'Hubo un error, intenta más tarde.'; // En caso de error
+      });
+    }
+  }
+
+  Widget _buildChatInterface() {
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            itemCount: chatMessages.length,
+            itemBuilder: (context, index) {
+              final message = chatMessages[index];
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Tú: ${message['user']}"),
+                  Text("Bot: ${message['bot']}"),
+                ],
+              );
+            },
+          ),
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: chatController,
+                decoration: InputDecoration(
+                  hintText: 'Escribe tu mensaje...',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.send),
+              onPressed: () {
+                final userMessage = chatController.text.trim();
+                chatController.clear();
+                sendMessage(userMessage); // Enviar mensaje cuando se presiona el ícono de enviar
+              },
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   Widget _buildProductList() {
@@ -111,22 +184,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       ],
     );
 
-    Widget tabBar = TabBar(
-      tabs: [
-        Tab(text: 'Tendencia'),
-        Tab(text: 'Deportes'),
-        Tab(text: 'Audífonos'),
-        Tab(text: 'Inalámbricos'),
-        Tab(text: 'Bluetooth'),
-      ],
-      labelStyle: TextStyle(fontSize: 16.0),
-      unselectedLabelStyle: TextStyle(fontSize: 14.0),
-      labelColor: Colors.grey,
-      unselectedLabelColor: Color.fromRGBO(0, 0, 0, 0.5),
-      isScrollable: true,
-      controller: tabController,
-    );
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Tu Tienda'),
@@ -139,13 +196,24 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               );
             },
           ),
+          IconButton(
+            icon: Icon(Icons.chat),
+            onPressed: () {
+              // Navegar a la pantalla del chatbot cuando el ícono es presionado
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChatScreen()), // Se navega a ChatScreen
+              );
+            },
+          ),
         ],
       ),
-      bottomNavigationBar: CustomBottomBar(controller: bottomTabController),
+      bottomNavigationBar: CustomBottomBar(controller: tabController), // Pasar el controller
+
       body: CustomPaint(
         painter: MainBackground(),
         child: TabBarView(
-          controller: bottomTabController,
+          controller: tabController,
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
             SafeArea(
@@ -176,31 +244,22 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         child: Column(
                           children: [
                             _buildProductList(),
-                            SizedBox(height: 16),
-                            tabBar,
                           ],
                         ),
                       ),
                     ),
                   ];
                 },
-                body: TabView(tabController: tabController),
+                body: _buildChatInterface(),
               ),
             ),
             CategoryListPage(),
             CheckOutPage(),
             ProfilePage(),
+            // Agregar el TabView
+            TabView(tabController: tabController), // TabView agregado aquí
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ChatPage()),
-          );
-        },
-        child: Icon(Icons.chat),
       ),
     );
   }

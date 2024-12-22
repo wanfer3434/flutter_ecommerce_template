@@ -3,29 +3,35 @@ name: Build APK
 on:
   push:
     branches:
-      - master  # Cambiar de 'main' a 'master'
+      - master  # Ejecutar el workflow en la rama 'master'
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      # Paso 1: Clonar el repositorio
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
+      # Paso 2: Configurar Flutter
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.27.1'  # Especificar la versión exacta de Flutter
 
+      # Paso 3: Instalar dependencias
       - name: Install dependencies
         run: flutter pub get
 
+      # Paso 4: Construir el APK en modo release
       - name: Build APK
         run: flutter build apk --release
 
+      # Paso 5: Subir el APK como artefacto
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
           name: app-release.apk
           path: build/app/outputs/flutter-apk/app-release.apk
+
