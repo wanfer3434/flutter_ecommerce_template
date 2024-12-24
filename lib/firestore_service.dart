@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class FirestoreService {
   // Suponiendo que tienes una colección 'productos' en Firestore
   final FirebaseFirestore _db = FirebaseFirestore.instance;

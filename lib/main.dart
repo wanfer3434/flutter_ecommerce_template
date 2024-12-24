@@ -6,7 +6,9 @@ import 'package:ecommerce_int2/screens/category/category_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // Archivo generado por Firebase para las opciones de configuración.
 import 'package:ecommerce_int2/screens/main/main_page.dart';
-
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart'; // Archivo generado por FlutterFire CLI
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
