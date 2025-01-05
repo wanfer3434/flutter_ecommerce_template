@@ -9,7 +9,10 @@ import '../../custom_background.dart';
 import '../../models/local_product_list.dart';
 import '../category/category_list_page.dart';
 import '../chat_page.dart';
+<<<<<<< HEAD
 import '../service/chat_service.dart';
+=======
+>>>>>>> 5ac9628f9e402416023f223a5514a2342064ea03
 import 'components/AnotherPage.dart';
 import 'components/banner_widget.dart';
 import 'components/custom_bottom_bar.dart';
@@ -17,6 +20,7 @@ import 'components/product_list.dart';
 import 'components/tab_view.dart';
 
 
+<<<<<<< HEAD
 
 List<String> timelines = [
   'Destacado Semana',
@@ -25,6 +29,8 @@ List<String> timelines = [
 ];
 String selectedTimeline = 'Presentado Semanalmente';
 
+=======
+>>>>>>> 5ac9628f9e402416023f223a5514a2342064ea03
 class MainPage extends StatefulWidget {
   @override
   _MainPageState createState() => _MainPageState();
@@ -33,16 +39,46 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   late TabController tabController;
   late TabController bottomTabController;
+<<<<<<< HEAD
   TextEditingController searchController = TextEditingController();
   bool isSearching = false;
   List<Product> products = [];
   List<Product> searchResults = [];
+=======
+  List<String> timelines = ["Hoy", "Semana", "Mes"];
+  String selectedTimeline = "Hoy";
+  List<Map<String, String>> chatMessages = [];
+  TextEditingController chatController = TextEditingController();
+
+  final List<Product> products = [
+    // Llena esta lista con instancias de tu clase Product
+    Product(
+      id: '1',
+      name: 'Producto 1',
+      description: 'Descripción del producto 1',
+      imageUrls: ['https://via.placeholder.com/150'],
+      price: 29.99,
+      averageRating: 4.5,
+      ratingCount: 100,
+    ),
+    Product(
+      id: '2',
+      name: 'Producto 2',
+      description: 'Descripción del producto 2',
+      imageUrls: ['https://via.placeholder.com/150'],
+      price: 49.99,
+      averageRating: 4.7,
+      ratingCount: 200,
+    ),
+  ];
+>>>>>>> 5ac9628f9e402416023f223a5514a2342064ea03
 
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: 5, vsync: this);
     bottomTabController = TabController(length: 4, vsync: this);
+<<<<<<< HEAD
     products = LocalProductService().getProducts();
   }
 
@@ -88,6 +124,84 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
     return ProductList(
       products: isSearching ? searchResults : products,
+=======
+  }
+
+  Widget _buildProductList() {
+    return ProductList(
+      products: products,
+    );
+  }
+
+  Future<void> sendMessage(String userMessage) async {
+    if (userMessage.isEmpty) return;
+
+    setState(() {
+      chatMessages.add({'user': userMessage, 'bot': 'Cargando...'});
+    });
+
+    try {
+      final responseDoc = await FirebaseFirestore.instance
+          .collection('responses')
+          .where('input', isEqualTo: userMessage.toLowerCase())
+          .limit(1)
+          .get();
+
+      String botResponse = responseDoc.docs.isNotEmpty
+          ? responseDoc.docs.first['response']
+          : 'Lo siento, no entiendo tu mensaje. ¿Podrías reformularlo?';
+
+      setState(() {
+        chatMessages.last['bot'] = botResponse;
+      });
+    } catch (e) {
+      setState(() {
+        chatMessages.last['bot'] = 'Hubo un error, intenta más tarde.';
+      });
+    }
+  }
+
+  Widget _buildChatInterface() {
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            itemCount: chatMessages.length,
+            itemBuilder: (context, index) {
+              final message = chatMessages[index];
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Tú: ${message['user']}"),
+                  Text("Bot: ${message['bot']}"),
+                ],
+              );
+            },
+          ),
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: chatController,
+                decoration: InputDecoration(
+                  hintText: 'Escribe tu mensaje...',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.send),
+              onPressed: () {
+                final userMessage = chatController.text.trim();
+                chatController.clear();
+                sendMessage(userMessage);
+              },
+            ),
+          ],
+        ),
+      ],
+>>>>>>> 5ac9628f9e402416023f223a5514a2342064ea03
     );
   }
 
@@ -96,6 +210,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     Widget topHeader = Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
+<<<<<<< HEAD
         Flexible(
           child: InkWell(
             onTap: () {
@@ -146,6 +261,25 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             ),
           ),
         ),
+=======
+        for (var timeline in timelines)
+          Flexible(
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  selectedTimeline = timeline;
+                });
+              },
+              child: Text(
+                timeline,
+                style: TextStyle(
+                  fontSize: timeline == selectedTimeline ? 20 : 14,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          ),
+>>>>>>> 5ac9628f9e402416023f223a5514a2342064ea03
       ],
     );
 
@@ -167,6 +301,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
     return Scaffold(
       appBar: AppBar(
+<<<<<<< HEAD
         title: !isSearching
             ? Text('Tu Tienda')
             : TextField(
@@ -199,16 +334,25 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         ],
       ),
       bottomNavigationBar: CustomBottomBar(controller: bottomTabController),
+=======
+        title: Text('Tu Tienda'),
+      ),
+>>>>>>> 5ac9628f9e402416023f223a5514a2342064ea03
       body: CustomPaint(
         painter: MainBackground(),
         child: TabBarView(
           controller: bottomTabController,
+<<<<<<< HEAD
           physics: NeverScrollableScrollPhysics(), // Mantén esto si no quieres swipe en tabs.
+=======
+          physics: NeverScrollableScrollPhysics(),
+>>>>>>> 5ac9628f9e402416023f223a5514a2342064ea03
           children: <Widget>[
             SafeArea(
               child: NestedScrollView(
                 headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
+<<<<<<< HEAD
                     SliverAppBar(
                       expandedHeight: 250, // Ajusta la altura del banner
                       pinned: true,
@@ -239,6 +383,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         ),
                       ),
                     ),
+=======
+                    SliverToBoxAdapter(child: topHeader),
+                    SliverToBoxAdapter(child: _buildProductList()),
+                    SliverToBoxAdapter(child: tabBar),
+>>>>>>> 5ac9628f9e402416023f223a5514a2342064ea03
                   ];
                 },
                 body: TabView(tabController: tabController),
@@ -246,7 +395,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             ),
             CategoryListPage(),
             CheckOutPage(),
+<<<<<<< HEAD
             ProfilePage(),
+=======
+            _buildChatInterface(),
+>>>>>>> 5ac9628f9e402416023f223a5514a2342064ea03
           ],
         ),
       ),
@@ -255,6 +408,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 }
 
 
+<<<<<<< HEAD
 
 
 
@@ -263,3 +417,5 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
 
 
+=======
+>>>>>>> 5ac9628f9e402416023f223a5514a2342064ea03

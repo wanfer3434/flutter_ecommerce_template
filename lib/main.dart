@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+<<<<<<< HEAD
 import '/screens/splash_page.dart';
 import '/models/category.dart';
 import '/screens/category/category_provider.dart';
@@ -7,6 +8,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // Archivo generado por Firebase para las opciones de configuración.
 import '/screens/main/main_page.dart';
 import 'package:flutter/material.dart';
+=======
+import 'package:ecommerce_int2/screens/splash_page.dart';
+import 'package:ecommerce_int2/models/category.dart';
+import 'package:ecommerce_int2/screens/category/category_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart'; // Archivo generado por Firebase para las opciones de configuración.
+import 'package:ecommerce_int2/screens/main/main_page.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+>>>>>>> 5ac9628f9e402416023f223a5514a2342064ea03
 import 'firebase_options.dart'; // Archivo generado por FlutterFire CLI
 
 void main() async {

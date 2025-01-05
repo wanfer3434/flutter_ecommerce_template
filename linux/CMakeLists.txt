@@ -1,5 +1,9 @@
 # Project-level configuration.
+<<<<<<< HEAD
 cmake_minimum_required(VERSION 3.13)
+=======
+cmake_minimum_required(VERSION 3.10)
+>>>>>>> 5ac9628f9e402416023f223a5514a2342064ea03
 project(runner LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
@@ -7,7 +11,11 @@ project(runner LANGUAGES CXX)
 set(BINARY_NAME "flutter_ecommerce_template")
 # The unique GTK application identifier for this application. See:
 # https://wiki.gnome.org/HowDoI/ChooseApplicationID
+<<<<<<< HEAD
 set(APPLICATION_ID "com.example.flutter_ecommerce_template")
+=======
+set(APPLICATION_ID "com.int2.flutter_ecommerce_template")
+>>>>>>> 5ac9628f9e402416023f223a5514a2342064ea03
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
@@ -54,8 +62,30 @@ add_subdirectory(${FLUTTER_MANAGED_DIR})
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK REQUIRED IMPORTED_TARGET gtk+-3.0)
 
+<<<<<<< HEAD
 # Application build; see runner/CMakeLists.txt.
 add_subdirectory("runner")
+=======
+add_definitions(-DAPPLICATION_ID="${APPLICATION_ID}")
+
+# Define the application target. To change its name, change BINARY_NAME above,
+# not the value here, or `flutter run` will no longer work.
+#
+# Any new source files that you add to the application should be added here.
+add_executable(${BINARY_NAME}
+  "main.cc"
+  "my_application.cc"
+  "${FLUTTER_MANAGED_DIR}/generated_plugin_registrant.cc"
+)
+
+# Apply the standard set of build settings. This can be removed for applications
+# that need different build settings.
+apply_standard_settings(${BINARY_NAME})
+
+# Add dependency libraries. Add any application-specific dependencies here.
+target_link_libraries(${BINARY_NAME} PRIVATE flutter)
+target_link_libraries(${BINARY_NAME} PRIVATE PkgConfig::GTK)
+>>>>>>> 5ac9628f9e402416023f223a5514a2342064ea03
 
 # Run the Flutter tool portions of the build. This must not be removed.
 add_dependencies(${BINARY_NAME} flutter_assemble)
@@ -69,7 +99,10 @@ set_target_properties(${BINARY_NAME}
   RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/intermediates_do_not_run"
 )
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5ac9628f9e402416023f223a5514a2342064ea03
 # Generated plugin build rules, which manage building the plugins and adding
 # them to the application.
 include(flutter/generated_plugins.cmake)
@@ -106,12 +139,15 @@ foreach(bundled_library ${PLUGIN_BUNDLED_LIBRARIES})
     COMPONENT Runtime)
 endforeach(bundled_library)
 
+<<<<<<< HEAD
 # Copy the native assets provided by the build.dart from all packages.
 set(NATIVE_ASSETS_DIR "${PROJECT_BUILD_DIR}native_assets/linux/")
 install(DIRECTORY "${NATIVE_ASSETS_DIR}"
    DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
    COMPONENT Runtime)
 
+=======
+>>>>>>> 5ac9628f9e402416023f223a5514a2342064ea03
 # Fully re-copy the assets directory on each build to avoid having stale files
 # from a previous install.
 set(FLUTTER_ASSET_DIR_NAME "flutter_assets")
